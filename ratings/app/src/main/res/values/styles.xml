@@ -1,0 +1,48 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
+    </style>
+
+    <style name="buttonFill" parent="Base.TextAppearance.AppCompat.Widget.Button">
+        <item name="android:background">@drawable/button_background_fill</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="buttonBorder" parent="Base.TextAppearance.AppCompat.Widget.Button">
+        <item name="android:background">@drawable/button_background_empty</item>
+    </style>
+
+    <style name="editText" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:textSize">@dimen/edittext_text_size</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="ActionBarStyle" parent="android:Widget.Holo.Light.ActionBar">
+        <item name="android:titleTextStyle">@style/HoloTitleText</item>
+    </style>
+
+    <style name="HoloTitleText" parent="android:TextAppearance.Holo">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="ratingBar" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/rating_bar_full</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+
+</resources>
