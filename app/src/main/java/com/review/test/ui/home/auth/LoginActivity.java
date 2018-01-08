@@ -15,53 +15,40 @@ import android.widget.Toast;
 
 import com.review.test.R;
 import com.review.test.common.BaseActivity;
+import com.review.test.config.ApiUrl;
+import com.review.test.core.RatingsApplication;
+import com.review.test.core.RtClients;
+import com.review.test.data.implementation.HttpRepository;
+import com.review.test.data.model.RatingsPref;
+import com.review.test.data.model.User;
 import com.review.test.ui.home.HomeActivity;
+import com.review.test.util.Util;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
-public class LoginActivity extends BaseActivity {
-
-
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "demo1@demo.com:123456", "mahabub.cse.buet@hotmail.com:123456"
-    };
-
-    private UserLoginTask mAuthTask = null;
-
+public class LoginActivity extends BaseActivity implements AuthContract.AuthView {
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
+    private AuthContract.AuthPresenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        // Set up the login form.
-        mEmailView = findViewById(R.id.email);
-        mPasswordView = findViewById(R.id.password);
-        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
-            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin();
-                return true;
-            }
-            return false;
-        });
+        presenter = new AuthPresenter(this, new HttpRepository(this));
 
-        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(view -> attemptLogin());
+
+        if (RatingsApplication.getInstant().isLogin()) {
+            startActivity(new Intent(this, HomeActivity.class));
+        }
+        initViewComponents();
 
     }
 
-
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
@@ -88,9 +75,16 @@ public class LoginActivity extends BaseActivity {
         if (cancel) {
             focusView.requestFocus();
         } else {
-            showProgress(true, "Processing...");
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+            Util.get().showProgress(this, true, "Processing...");
+            JSONObject job = new JSONObject();
+            try {
+                job.put("email", email);
+                job.put("password", password);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            presenter.doLogin(ApiUrl.getInstance().getUserLoginUrl(), job.toString());
+            hideKeyboard();
         }
     }
 
@@ -107,60 +101,47 @@ public class LoginActivity extends BaseActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            hideKeyboard();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
+    @Override
+    public void initViewComponents() {
+        mEmailView = findViewById(R.id.email);
+        mPasswordView = findViewById(R.id.password);
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail) && pieces[1].equals(mPassword)) {
-                    return true;
-                }
-            }
-
             return false;
-        }
+        });
 
-        @Override
-        protected void onPostExecute(Boolean success) {
-            mAuthTask = null;
-            showProgress(false, null);
-            if (success) {
-                showToastMsg("Login success");
-                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            } else {
-                Toast.makeText(getApplicationContext(), R.string.wrong_information, Toast.LENGTH_SHORT).show();
-            }
-        }
+        Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton.setOnClickListener(view -> attemptLogin());
+    }
 
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false, null);
-        }
+    @Override
+    public void showSuccessMessage(String msg) {
+        Util.get().showToastMsg(this, msg);
+    }
+
+    @Override
+    public void showErrorMessage(String msg) {
+        Util.get().showProgress(this, false, null);
+        Util.get().showToastMsg(this, msg);
+    }
+
+    @Override
+    public void signUpSuccess() {
+//for signup activity
+    }
+
+    @Override
+    public void loginSuccess(User user) {
+        Util.get().showProgress(this, false, null);
+        showSuccessMessage("Login successful !");
+        RatingsPref pref = new RatingsPref();
+        pref.setUser(user);
+        RatingsApplication.getInstant().setPreference(pref);
+        startActivity(new Intent(this, HomeActivity.class));
     }
 }
 

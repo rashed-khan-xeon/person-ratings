@@ -20,6 +20,10 @@
             android:id="@+id/settingMenu"
             android:icon="@drawable/ic_settings_black_24dp"
             android:title="Setting " />
+        <item
+            android:id="@+id/logoutMenu"
+            android:icon="@drawable/ic_logout"
+            android:title="Logout " />
 
     </group>
 

@@ -13,7 +13,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -22,7 +24,7 @@ import java.util.Map;
 public class GsonRequest<T> extends Request<T> {
     private final Gson gson = new GsonBuilder()
             .registerTypeAdapter(Date.class, new DateSerializer())
-            .registerTypeAdapter(Date.class,new DateDeserializer())
+            .registerTypeAdapter(Date.class, new DateDeserializer())
             .create();
     //private final Gson gson = new GsonBuilder().create();
     private final Class<T> clazz;
@@ -33,8 +35,8 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * Make a GET request and return a parsed object from JSON.
      *
-     * @param url URL of the request to make
-     * @param clazz Relevant class object, for Gson's reflection
+     * @param url     URL of the request to make
+     * @param clazz   Relevant class object, for Gson's reflection
      * @param headers Map of request headers
      */
     public GsonRequest(int method, String url, Class<T> clazz, Map<String, String> headers,
@@ -52,11 +54,14 @@ public class GsonRequest<T> extends Request<T> {
     }
 
 
-
-
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return headers != null ? headers : super.getHeaders();
+        Map<String, String> headers = super.getHeaders();
+        RatingsApplication.getInstant().addSessionCookie(headers);
+        if (headers == null || headers.equals(Collections.emptyMap())) {
+            headers = new HashMap<>();
+        }
+        return headers;
     }
 
     @Override
@@ -69,7 +74,7 @@ public class GsonRequest<T> extends Request<T> {
         try {
             return parameters.getBytes(getParamsEncoding());
         } catch (UnsupportedEncodingException e) {
-            Log.d("Exception",e.toString());
+            Log.d("Exception", e.toString());
         }
         return null;
     }
@@ -82,11 +87,12 @@ public class GsonRequest<T> extends Request<T> {
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
+            RatingsApplication.getInstant().checkSessionCookie(response.headers);
             String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            if(json.isEmpty())
-                json="{'statusCode':"+response.statusCode+"}";
+            if (json.isEmpty())
+                json = "{'statusCode':" + response.statusCode + "}";
             Log.i("RESPONSE", json);
-            T df=gson.fromJson(json, clazz);
+            T df = gson.fromJson(json, clazz);
             return Response.success(gson.fromJson(json, clazz), HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));

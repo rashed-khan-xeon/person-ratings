@@ -10,30 +10,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 public class BaseActivity extends AppCompatActivity {
-    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
-
-    public void showProgress(boolean show, @Nullable String msg) {
-        if (show) {
-            progressDialog = new ProgressDialog(this);
-            progressDialog.setIndeterminate(true);
-            progressDialog.setMessage(msg);
-            progressDialog.setProgressStyle(android.R.style.Widget_DeviceDefault_Light_ProgressBar_Horizontal);
-            progressDialog.create();
-            progressDialog.show();
-        } else {
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
-        }
-    }
-
-    public void showToastMsg(String msg) {
-        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     public void hideKeyboard() {

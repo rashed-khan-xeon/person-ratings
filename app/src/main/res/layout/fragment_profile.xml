@@ -34,13 +34,16 @@
                     app:cardCornerRadius="2dp"
                     app:cardUseCompatPadding="true">
 
-                    <ImageButton
+                    <TextView
+                        android:id="@+id/tvEditProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
                         android:background="@android:color/transparent"
+                        android:drawableLeft="@drawable/ic_edit_black_24dp"
+                        android:drawablePadding="5dp"
                         android:padding="5dp"
-                        android:src="@drawable/ic_edit_black_24dp" />
+                        android:text="Edit" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -50,25 +53,25 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/textView2"
+                            android:id="@+id/tvUserNameInProfile"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="monospace"
                             android:padding="5dp"
-                            android:text="Rashed khan arif"
                             android:textSize="18sp" />
 
                         <TextView
+                            android:id="@+id/tvDesignation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="5dp"
                             android:gravity="center"
                             android:lineSpacingExtra="4dp"
                             android:paddingBottom="5dp"
-                            android:text="Associate Software Engineer at ConstatntMD"
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvOrgName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:fontFamily="serif"
@@ -76,16 +79,15 @@
                             android:lineSpacingExtra="2dp"
                             android:paddingEnd="5dp"
                             android:paddingStart="5dp"
-                            android:text="Bangladesh University of Business and Technology"
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:fontFamily="serif"
                             android:gravity="center"
-                            android:text="Dhaka 1216 , Bangladesh"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
@@ -96,7 +98,7 @@
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="45dp"
                 android:background="@drawable/image_border"
                 android:padding="3dp"
                 android:src="@drawable/rashed_png" />
@@ -122,28 +124,28 @@
                 android:paddingTop="20dp">
 
                 <TextView
+                    android:id="@+id/tvProfession"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="Software Engineer"
                     android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/tvUserEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="serif"
                     android:gravity="center"
-                    android:text="arifkhan0713@hotmail.com"
                     android:textSize="14sp" />
 
                 <TextView
+                    android:id="@+id/tvPhoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="serif"
                     android:gravity="center"
-                    android:text="+880-1852540565"
                     android:textSize="14sp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
@@ -159,24 +161,33 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
                 android:orientation="vertical"
-                android:paddingBottom="20dp"
-                android:paddingTop="20dp">
+                android:paddingBottom="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
                     android:gravity="start|center"
-                    android:paddingBottom="10dp"
-                    android:paddingStart="10dp"
+                    android:paddingBottom="5dp"
                     android:paddingEnd="10dp"
-                    android:text="Your selected categories:"
+                    android:paddingStart="10dp"
+                    android:paddingTop="5dp"
+                    android:text="Your categories"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
-
+                <TextView
+                    android:id="@+id/tvUserCategories"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:lineSpacingExtra="5dp"
+                    android:paddingBottom="10dp"
+                    android:paddingEnd="10dp"
+                    android:paddingStart="20dp" />
             </LinearLayout>
         </android.support.v7.widget.CardView>
 
