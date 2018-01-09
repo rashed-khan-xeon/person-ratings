@@ -60,6 +60,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     private int selectedRatingsCatId = 0;
     private List<Justify> justifies = new ArrayList<>();
     String selectedRtCatName;
+
     public JustifyFragment() {
         // Required empty public constructor
     }
@@ -140,6 +141,10 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
         });
         btnJustificationSubmit.setOnClickListener(view -> {
             Justify justify = new Justify();
+            if (selectedRatingsCatId == 0) {
+                Util.get().showToastMsg(getActivity(), "Please select a category !");
+                return;
+            }
             if (rtRatings.getRating() == 0 && TextUtils.isEmpty(etComments.getText())) {
                 Util.get().showToastMsg(context, "Please rate or write a review !");
                 return;

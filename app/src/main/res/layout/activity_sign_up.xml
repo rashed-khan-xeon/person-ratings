@@ -79,8 +79,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/spinner_background"
                 android:drawablePadding="10dp"
-                android:dropDownSelector="@color/colorAccent"
-                android:entries="@array/professions" />
+                android:dropDownSelector="@color/colorAccent" />
 
 
             <EditText

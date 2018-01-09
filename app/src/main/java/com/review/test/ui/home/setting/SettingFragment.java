@@ -11,19 +11,24 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.review.test.R;
 import com.review.test.common.BaseFragment;
 import com.review.test.config.ApiUrl;
 import com.review.test.core.RatingsApplication;
+import com.review.test.core.RtClients;
 import com.review.test.data.implementation.HttpRepository;
 import com.review.test.data.model.Category;
+import com.review.test.data.model.RatingsCategory;
 import com.review.test.data.model.User;
 import com.review.test.data.model.UserSetting;
-import com.review.test.ui.home.common.BaseView;
+import com.review.test.ui.home.search.SearchFragment;
+import com.review.test.util.Util;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -36,6 +41,8 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     private Button btnSettingSaveChanges, btnSettingsSetCat;
     private ListView lvCategories;
     private SettingContract.SettingPresenter presenter;
+    private List<Category> categoryList;
+    private List<RatingsCategory> ratingsCategoryList = new LinkedList<>();
 
     public SettingFragment() {
     }
@@ -80,27 +87,64 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         chkHasReview = settingView.findViewById(R.id.chkHasReview);
         chkHasRatings = settingView.findViewById(R.id.chkHasRatings);
         chkProfileImage = settingView.findViewById(R.id.chkProfileImage);
-        presenter.getCategoriesByUserType(ApiUrl.getInstance().getCategoriesByUserTypeId(RatingsApplication.getInstant().getRatingsPref().getUser().getUserTypeId()));
+        if (RatingsApplication.getInstant().getRatingsPref() != null)
+            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null)
+                presenter.getCategoriesByUserType(ApiUrl.getInstance().getCategoriesByUserTypeIdUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserTypeId()));
+        btnSettingsSetCat.setOnClickListener(view -> {
+            presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(ratingsCategoryList));
+        });
     }
 
     @Override
     public void showSuccessMessage(String msg) {
-
+        Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void showErrorMessage(String msg) {
-
+        Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void setCategories(List<Category> categories) {
         if (categories != null) {
             if (categories.size() > 0) {
-                UserCategoryAdapter adapter = new UserCategoryAdapter(categories);
+                categoryList = categories;
+                UserCategoryAdapter adapter = new UserCategoryAdapter(categoryList);
                 lvCategories.setAdapter(adapter);
+                int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
+                adapter.setItemCheckedListener(position -> {
+                    for (RatingsCategory rt : ratingsCategoryList) {
+                        if (rt.getCatId() == categoryList.get(position).getCatId()) {
+                            return;
+                        }
+                    }
+                    RatingsCategory rc = new RatingsCategory();
+                    rc.setUserId(userId);
+                    rc.setCatId(categoryList.get(position).getCatId());
+                    rc.setActive(1);
+                    ratingsCategoryList.add(rc);
+                });
+                adapter.setItemCheckedRemovedListener(position -> {
+                    for (RatingsCategory rt : ratingsCategoryList) {
+                        if (rt.getCatId() == categoryList.get(position).getCatId()) {
+                            ratingsCategoryList.remove(rt);
+                            break;
+                        }
+                    }
+                });
             }
         }
+    }
+
+    @Override
+    public void setUserRatingsCategories(List<RatingsCategory> ratingsCategories) {
+
+    }
+
+    @Override
+    public void ratingsCategoryAdded(String msg) {
+        Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
@@ -110,7 +154,8 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     }
 
     private class UserCategoryAdapter extends BaseAdapter {
-
+        private SearchFragment.ClickListener checkClickListener;
+        private SearchFragment.ClickListener unCheckClickListener;
         private List<Category> categories;
 
         public UserCategoryAdapter(List<Category> categories) {
@@ -127,6 +172,14 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             return categories.get(i);
         }
 
+        public void setItemCheckedListener(SearchFragment.ClickListener listener) {
+            this.checkClickListener = listener;
+        }
+
+        public void setItemCheckedRemovedListener(SearchFragment.ClickListener listener) {
+            this.unCheckClickListener = listener;
+        }
+
         @Override
         public long getItemId(int i) {
             return getItem(i).getCatId();
@@ -140,10 +193,17 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             } else {
                 row = view;
             }
-            CheckBox tvUserCategory = row.findViewById(R.id.chkUserCategory);
+            CheckBox chkUserCategory = row.findViewById(R.id.chkUserCategory);
             if (!TextUtils.isEmpty(getItem(i).getName())) {
-                tvUserCategory.setText(categories.get(i).getName());
+                chkUserCategory.setText(categories.get(i).getName());
             }
+            chkUserCategory.setOnCheckedChangeListener((compoundButton, b) -> {
+                if (b) {
+                    checkClickListener.onItemClick(i);
+                } else {
+                    unCheckClickListener.onItemClick(i);
+                }
+            });
             return row;
         }
     }

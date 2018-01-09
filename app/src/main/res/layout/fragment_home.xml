@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:paddingBottom="10dp"
                 android:paddingTop="10dp"
-                android:text="Search a person for justification" />
+                android:text="Search a person" />
 
             <EditText
                 android:id="@+id/etUserNameOrEmail"

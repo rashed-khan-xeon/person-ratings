@@ -21,11 +21,14 @@ import com.review.test.core.RtClients;
 import com.review.test.data.implementation.HttpRepository;
 import com.review.test.data.model.RatingsPref;
 import com.review.test.data.model.User;
+import com.review.test.data.model.UserType;
 import com.review.test.ui.home.HomeActivity;
 import com.review.test.util.Util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.List;
 
 
 public class LoginActivity extends BaseActivity implements AuthContract.AuthView {
@@ -142,6 +145,11 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
         pref.setUser(user);
         RatingsApplication.getInstant().setPreference(pref);
         startActivity(new Intent(this, HomeActivity.class));
+    }
+
+    @Override
+    public void setUserTypesToView(List<UserType> userTypes) {
+
     }
 }
 

@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.util.Patterns;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -15,30 +16,36 @@ import android.widget.Spinner;
 import com.google.gson.JsonObject;
 import com.review.test.R;
 import com.review.test.common.BaseActivity;
-import com.review.test.common.ViewInitializer;
+import com.review.test.common.adapter.SpinnerAdapter;
 import com.review.test.config.ApiUrl;
 import com.review.test.core.RatingsApplication;
 import com.review.test.core.RtClients;
 import com.review.test.data.implementation.HttpRepository;
 import com.review.test.data.model.RatingsPref;
 import com.review.test.data.model.User;
+import com.review.test.data.model.UserType;
 import com.review.test.ui.home.HomeActivity;
 import com.review.test.util.Util;
 
-import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SignUpActivity extends BaseActivity implements AuthContract.AuthView {
     private EditText etFullName, etEmail, etPhoneNumber, etPassword, etConPassword;
     private Spinner spnProfession;
     private Button btnSignUp;
     private AuthContract.AuthPresenter presenter;
+    private int userTypeId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         presenter = new AuthPresenter(this, new HttpRepository(this));
+        presenter.getUserTypes(ApiUrl.getInstance().getUserTypesUrl());
         initViewComponents();
         configToolbar();
         btnSignUp.setOnClickListener(view -> {
@@ -55,6 +62,7 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
             user.addProperty("phoneNumber", etPhoneNumber.getText().toString());
             user.addProperty("email", etEmail.getText().toString());
             user.addProperty("password", Util.get().md5(etPassword.getText().toString()));
+            user.addProperty("userTypeId", String.valueOf(userTypeId));
             String bodyData = RtClients.getInstance().getGson().toJson(user);
             presenter.doSignUp(ApiUrl.getInstance().getUserSignUpUrl(), bodyData);
             Util.get().showProgress(this, true, "Processing...");
@@ -92,6 +100,10 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
             etConPassword.setError("Password do not match");
             return false;
         }
+        if (userTypeId == 0) {
+            Util.get().showToastMsg(this, "Your profession is required !");
+            return false;
+        }
         return true;
     }
 
@@ -120,6 +132,19 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         etConPassword = findViewById(R.id.etConPassword);
         spnProfession = findViewById(R.id.spnProfession);
         btnSignUp = findViewById(R.id.btnSignUp);
+        spnProfession.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                spnProfession.setSelection(i);
+                Map.Entry<String, String> data = (Map.Entry<String, String>) spnProfession.getSelectedItem();
+                userTypeId = Integer.parseInt(data.getKey());
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                userTypeId = 0;
+            }
+        });
     }
 
     @Override
@@ -154,6 +179,19 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         RatingsApplication.getInstant().setPreference(pref);
         startActivity(new Intent(this, HomeActivity.class));
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    public void setUserTypesToView(List<UserType> userTypes) {
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put("0", "-- Select your profession --");
+        for (UserType ut : userTypes) {
+            data.put(String.valueOf(ut.getUserTypeId()), ut.getName());
+        }
+        SpinnerAdapter<String, String> spa = new com.review.test.common.adapter.SpinnerAdapter<>(this, android.R.layout.simple_spinner_item, data);
+        spa.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnProfession.setAdapter(spa);
+
     }
 
     @Override

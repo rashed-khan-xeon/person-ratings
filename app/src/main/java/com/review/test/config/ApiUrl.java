@@ -17,7 +17,7 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-    private final String BASE_URL = "http://192.168.1.101/ratings/";
+    private final String BASE_URL = "http://192.168.1.104/ratings/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -29,6 +29,10 @@ public class ApiUrl {
 
     public String getUserSignUpUrl() {
         return BASE_URL + "api/v1/user-signup";
+    }
+
+    public String getUserTypesUrl() {
+        return BASE_URL + "api/v1/user-types";
     }
 
     public String getUserDetailsUrl(int userId) {
@@ -55,8 +59,12 @@ public class ApiUrl {
         return BASE_URL + "api/v1/user-average-ratings-by-cat?userId=" + userId;
     }
 
-    public String getCategoriesByUserTypeId(int userTypeId) {
+    public String getCategoriesByUserTypeIdUrl(int userTypeId) {
         return BASE_URL + "api/v1/categories-by-user-type-id?userTypeId=" + userTypeId;
+    }
+
+    public String getAddRatingsCategoriesUrl() {
+        return BASE_URL + "api/v1/ratings-category-add-or-update";
     }
 
 }
