@@ -17,7 +17,7 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-    private final String BASE_URL = "http://192.168.1.104/ratings/";
+    private final String BASE_URL = "http://192.168.1.107/ratings/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -37,6 +37,10 @@ public class ApiUrl {
 
     public String getUserDetailsUrl(int userId) {
         return BASE_URL + "api/v1/user-details?userId=" + userId;
+    }
+
+    public String getUpdateUserSettingsUrl() {
+        return BASE_URL + "api/v1/user-settings-update" ;
     }
 
     public String getSearchUserUrl(String queryString) {

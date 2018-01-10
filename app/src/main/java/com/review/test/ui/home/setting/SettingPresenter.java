@@ -5,6 +5,7 @@ import com.review.test.core.ResponseListener;
 import com.review.test.data.implementation.HttpRepository;
 import com.review.test.data.model.Category;
 import com.review.test.data.model.RatingsCategory;
+import com.review.test.data.model.UserSetting;
 import com.review.test.data.repository.IHttpRepository;
 
 import java.util.HashMap;
@@ -34,6 +35,25 @@ public class SettingPresenter implements SettingContract.SettingPresenter {
             @Override
             public void success(Object response) {
                 view.ratingsCategoryAdded(response.toString());
+            }
+
+            @Override
+            public void error(Throwable error) {
+                view.showErrorMessage(error.getMessage());
+            }
+        });
+    }
+
+    @Override
+    public void updateUserSetting(String url, String body) {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+
+        repository.post(url, UserSetting.class, body, header, new ResponseListener<UserSetting>() {
+            @Override
+            public void success(UserSetting response) {
+                view.settingsUpdated(response);
             }
 
             @Override

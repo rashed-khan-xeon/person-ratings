@@ -22,6 +22,7 @@ import com.review.test.core.RtClients;
 import com.review.test.data.implementation.HttpRepository;
 import com.review.test.data.model.Category;
 import com.review.test.data.model.RatingsCategory;
+import com.review.test.data.model.RatingsPref;
 import com.review.test.data.model.User;
 import com.review.test.data.model.UserSetting;
 import com.review.test.ui.home.search.SearchFragment;
@@ -38,11 +39,10 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     private Context context;
     private View settingView;
     private CheckBox chkHasAddress, chkHasEmail, chkHasPhone, chkHasReview, chkHasRatings, chkProfileImage;
-    private Button btnSettingSaveChanges, btnSettingsSetCat;
+    private Button btnSettingSaveChanges;
     private ListView lvCategories;
     private SettingContract.SettingPresenter presenter;
     private List<Category> categoryList;
-    private List<RatingsCategory> ratingsCategoryList = new LinkedList<>();
 
     public SettingFragment() {
     }
@@ -80,7 +80,6 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     public void initViewComponents() {
         lvCategories = settingView.findViewById(R.id.lvCategories);
         btnSettingSaveChanges = settingView.findViewById(R.id.btnSettingSaveChanges);
-        btnSettingsSetCat = settingView.findViewById(R.id.btnSettingsSetCat);
         chkHasAddress = settingView.findViewById(R.id.chkHasAddress);
         chkHasEmail = settingView.findViewById(R.id.chkHasEmail);
         chkHasPhone = settingView.findViewById(R.id.chkHasPhone);
@@ -90,9 +89,39 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         if (RatingsApplication.getInstant().getRatingsPref() != null)
             if (RatingsApplication.getInstant().getRatingsPref().getUser() != null)
                 presenter.getCategoriesByUserType(ApiUrl.getInstance().getCategoriesByUserTypeIdUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserTypeId()));
-        btnSettingsSetCat.setOnClickListener(view -> {
-            presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(ratingsCategoryList));
+        btnSettingSaveChanges.setOnClickListener(view -> {
+            updateSetting();
         });
+    }
+
+    private void updateSetting() {
+        UserSetting setting = new UserSetting();
+        setting.setUserId(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId());
+        setting.setAddressVisible(chkHasAddress.isChecked() ? 1 : 0);
+        setting.setEmailVisible(chkHasEmail.isChecked() ? 1 : 0);
+        setting.setHasRating(chkHasRatings.isChecked() ? 1 : 0);
+        setting.setHasReview(chkHasReview.isChecked() ? 1 : 0);
+        setting.setImageVisible(chkProfileImage.isChecked() ? 1 : 0);
+        setting.setPhoneNumberVisible(chkHasPhone.isChecked() ? 1 : 0);
+        if (RatingsApplication.getInstant().getRatingsPref() != null)
+            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null)
+                presenter.updateUserSetting(ApiUrl.getInstance().getUpdateUserSettingsUrl(), RtClients.getInstance().getGson().toJson(setting));
+
+
+    }
+
+    @Override
+    public void settingsUpdated(UserSetting setting) {
+        Util.get().showToastMsg(getActivity(), "Settings updated !");
+        RatingsPref rtp = RatingsApplication.getInstant().getRatingsPref();
+        if (rtp != null) {
+            if (rtp.getUser() != null) {
+                User user = rtp.getUser();
+                user.setUserSetting(setting);
+                rtp.setUser(user);
+                RatingsApplication.getInstant().setPreference(rtp);
+            }
+        }
     }
 
     @Override
@@ -114,24 +143,18 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
                 lvCategories.setAdapter(adapter);
                 int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
                 adapter.setItemCheckedListener(position -> {
-                    for (RatingsCategory rt : ratingsCategoryList) {
-                        if (rt.getCatId() == categoryList.get(position).getCatId()) {
-                            return;
-                        }
-                    }
                     RatingsCategory rc = new RatingsCategory();
                     rc.setUserId(userId);
                     rc.setCatId(categoryList.get(position).getCatId());
                     rc.setActive(1);
-                    ratingsCategoryList.add(rc);
+                    presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
                 });
                 adapter.setItemCheckedRemovedListener(position -> {
-                    for (RatingsCategory rt : ratingsCategoryList) {
-                        if (rt.getCatId() == categoryList.get(position).getCatId()) {
-                            ratingsCategoryList.remove(rt);
-                            break;
-                        }
-                    }
+                    RatingsCategory rc = new RatingsCategory();
+                    rc.setUserId(userId);
+                    rc.setCatId(categoryList.get(position).getCatId());
+                    rc.setActive(0);
+                    presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
                 });
             }
         }
