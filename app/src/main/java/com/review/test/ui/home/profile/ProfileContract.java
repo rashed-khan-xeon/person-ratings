@@ -27,4 +27,12 @@ public interface ProfileContract {
 
         void setUserAvgRatingsToView(List<RatingSummary> avgRating);
     }
+
+    interface EditProfilePresenter {
+        void updateUserProfile(String url, String body);
+    }
+
+    interface EditProfileView extends BaseView {
+        void profileUpdated(User user);
+    }
 }

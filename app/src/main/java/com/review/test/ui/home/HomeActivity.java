@@ -20,6 +20,7 @@ import com.review.test.common.BaseActivity;
 import com.review.test.core.RatingsApplication;
 import com.review.test.data.model.User;
 import com.review.test.ui.home.auth.LoginActivity;
+import com.review.test.ui.home.history.HistoryFragment;
 import com.review.test.ui.home.profile.ProfileFragment;
 import com.review.test.ui.home.search.SearchFragment;
 import com.review.test.ui.home.setting.SettingFragment;
@@ -106,6 +107,9 @@ public class HomeActivity extends BaseActivity
             case R.id.settingMenu:
                 addFragment(SettingFragment.class);
                 break;
+            case R.id.historyMenu:
+                addFragment(HistoryFragment.class);
+                break;
             case R.id.logoutMenu:
                 finish();
                 RatingsApplication.getInstant().removePreference();
@@ -137,6 +141,7 @@ public class HomeActivity extends BaseActivity
     public void transferFragment(Fragment fragment) {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         ft.replace(R.id.homeContainer, fragment).commit();
 
     }

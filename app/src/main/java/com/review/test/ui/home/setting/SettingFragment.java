@@ -43,6 +43,7 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     private ListView lvCategories;
     private SettingContract.SettingPresenter presenter;
     private List<Category> categoryList;
+    private List<RatingsCategory> ratingsCategories;
 
     public SettingFragment() {
     }
@@ -87,8 +88,10 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         chkHasRatings = settingView.findViewById(R.id.chkHasRatings);
         chkProfileImage = settingView.findViewById(R.id.chkProfileImage);
         if (RatingsApplication.getInstant().getRatingsPref() != null)
-            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null)
+            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null) {
                 presenter.getCategoriesByUserType(ApiUrl.getInstance().getCategoriesByUserTypeIdUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserTypeId()));
+                presenter.getUserRatingsCategory(ApiUrl.getInstance().getUserRatingsCategoryUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+            }
         btnSettingSaveChanges.setOnClickListener(view -> {
             updateSetting();
         });
@@ -162,7 +165,9 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
 
     @Override
     public void setUserRatingsCategories(List<RatingsCategory> ratingsCategories) {
-
+        this.ratingsCategories = ratingsCategories;
+        UserCategoryAdapter adapter = (UserCategoryAdapter) lvCategories.getAdapter();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -220,13 +225,20 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             if (!TextUtils.isEmpty(getItem(i).getName())) {
                 chkUserCategory.setText(categories.get(i).getName());
             }
-            chkUserCategory.setOnCheckedChangeListener((compoundButton, b) -> {
-                if (b) {
+            if (ratingsCategories != null)
+                for (RatingsCategory rtc : ratingsCategories) {
+                    if (rtc.getCatId() == categories.get(i).getCatId()) {
+                        chkUserCategory.setChecked(true);
+                    }
+                }
+            chkUserCategory.setOnClickListener(view1 -> {
+                if (chkUserCategory.isChecked()) {
                     checkClickListener.onItemClick(i);
                 } else {
                     unCheckClickListener.onItemClick(i);
                 }
             });
+
             return row;
         }
     }

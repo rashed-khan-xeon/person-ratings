@@ -45,7 +45,8 @@
                 android:hint="@string/text_full_name"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etEmail"
@@ -57,7 +58,8 @@
                 android:hint="@string/prompt_email"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etPhoneNumber"
@@ -69,7 +71,8 @@
                 android:hint="@string/phone_number"
                 android:inputType="phone"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
 
             <Spinner
@@ -95,7 +98,8 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <EditText
                 android:id="@+id/etConPassword"
@@ -110,7 +114,8 @@
                 android:imeOptions="actionUnspecified"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/btnSignUp"

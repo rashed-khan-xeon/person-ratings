@@ -20,7 +20,7 @@ public interface AuthContract {
     }
 
     interface AuthView extends BaseView {
-        void signUpSuccess();
+        void signUpSuccess(User user);
 
         void loginSuccess(User user);
 

@@ -26,10 +26,10 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
 
     @Override
     public void doSignUp(String url, String body) {
-        repository.post(url, Object.class, body, null, new ResponseListener<Object>() {
+        repository.post(url, User.class, body, null, new ResponseListener<User>() {
             @Override
-            public void success(Object response) {
-                view.signUpSuccess();
+            public void success(User response) {
+                view.signUpSuccess(response);
             }
 
             @Override

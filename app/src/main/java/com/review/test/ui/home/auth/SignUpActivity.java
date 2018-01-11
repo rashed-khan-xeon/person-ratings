@@ -158,7 +158,7 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
     }
 
     @Override
-    public void signUpSuccess() {
+    public void signUpSuccess(User user) {
         JSONObject job = new JSONObject();
         try {
             job.put("email", etEmail.getText().toString());

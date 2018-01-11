@@ -133,7 +133,7 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
     }
 
     @Override
-    public void signUpSuccess() {
+    public void signUpSuccess(User user) {
 //for signup activity
     }
 

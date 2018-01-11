@@ -50,4 +50,11 @@
     <string name="name_email_phone_number">Name / Email / Phone Number</string>
     <string name="search">Search</string>
     <string name="submit">Submit</string>
+    <string name="address">Address</string>
+    <string name="organization_name">Organization Name</string>
+    <string name="designation">Designation</string>
+    <string name="active">Active</string>
+    <string name="login_to_your_account">Login to your account</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="update">Update</string>
 </resources>

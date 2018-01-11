@@ -31,6 +31,10 @@ public class ApiUrl {
         return BASE_URL + "api/v1/user-signup";
     }
 
+    public String getUserUpdateUrl() {
+        return BASE_URL + "api/v1/user-add-or-update";
+    }
+
     public String getUserTypesUrl() {
         return BASE_URL + "api/v1/user-types";
     }
@@ -40,7 +44,7 @@ public class ApiUrl {
     }
 
     public String getUpdateUserSettingsUrl() {
-        return BASE_URL + "api/v1/user-settings-update" ;
+        return BASE_URL + "api/v1/user-settings-update";
     }
 
     public String getSearchUserUrl(String queryString) {
@@ -69,6 +73,10 @@ public class ApiUrl {
 
     public String getAddRatingsCategoriesUrl() {
         return BASE_URL + "api/v1/ratings-category-add-or-update";
+    }
+
+    public String getUserReviewList(int userId) {
+        return BASE_URL + "api/v1/user-reviews-by-user-id?userId=" + userId;
     }
 
 }

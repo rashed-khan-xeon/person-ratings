@@ -20,6 +20,7 @@ import com.review.test.data.implementation.HttpRepository;
 import com.review.test.data.model.RatingSummary;
 import com.review.test.data.model.RatingsCategory;
 import com.review.test.data.model.User;
+import com.review.test.ui.home.search.SearchFragment;
 import com.review.test.util.Util;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
     private ProfilePresenter presenter;
     private int userId = 0;
     private TextView tvUserNameInProfile, tvDesignation, tvOrgName, tvAddress, tvProfession, tvUserEmail, tvPhoneNumber, tvUserCategories, tvEditProfile;
+    private SearchFragment.Transfer transfer;
 
     public ProfileFragment() {
 
@@ -51,6 +53,9 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
                 getUserDetails(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId());
             }
         }
+        tvEditProfile.setOnClickListener(view -> {
+            transfer.transferFragment(new EditProfileFragment());
+        });
         return profileView;
     }
 
@@ -64,13 +69,12 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-
+        this.transfer = (SearchFragment.Transfer) context;
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-
     }
 
 
