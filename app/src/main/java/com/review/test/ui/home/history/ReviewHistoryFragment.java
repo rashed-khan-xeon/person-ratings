@@ -76,22 +76,22 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
     }
 
     private class UserReviewAdapter extends BaseAdapter {
-        List<UserReview> userRatings;
+        List<UserReview> userReviews;
         Context context;
 
-        public UserReviewAdapter(List<UserReview> userRatings, Context context) {
-            this.userRatings = userRatings;
+        public UserReviewAdapter(List<UserReview> userReviews, Context context) {
+            this.userReviews = userReviews;
             this.context = context;
         }
 
         @Override
         public int getCount() {
-            return userRatings.size();
+            return userReviews.size();
         }
 
         @Override
         public UserReview getItem(int i) {
-            return userRatings.get(i);
+            return userReviews.get(i);
         }
 
         @Override

@@ -4,6 +4,7 @@ package com.review.test.ui.home.justify;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -14,9 +15,11 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.Spinner;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +52,10 @@ import java.util.Map;
 public class JustifyFragment extends BaseFragment implements JustifyContract.JustifyView {
     private Context context;
     private User user;
-    private TextView tvUserId, tvUserFullName, tvUserProfession;
-    private LinearLayout llRatingsArea, llReviewArea;
+    private TextView tvUserId, tvUserFullName, tvRatingsText, tvUserProfession, tvUserPhoneNUmber, tvUserAddress, tvProfessionLabel, tvOrgLabel, tvDesignationLabel, tvUserDesignation, tvUserOrgName, tvUserEmail;
+    private LinearLayout llDesignation;
+    private TableRow tRPhoneNumber, trUserEmail;
+    private LinearLayout llRatingsArea, llReviewArea, llAddress;
     private Spinner spnUserSelectedCat;
     private JustifyContract.JustifyPresenter presenter;
     private Button btnJustificationSubmit;
@@ -60,6 +65,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     private int selectedRatingsCatId = 0;
     private List<Justify> justifies = new ArrayList<>();
     String selectedRtCatName;
+    private ImageView imgUserImage;
 
     public JustifyFragment() {
         // Required empty public constructor
@@ -80,6 +86,44 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
         }
         initViewComponents();
         setUserDetailsToView();
+        rtRatings.setOnRatingBarChangeListener((ratingBar, v, b) -> {
+            tvRatingsText.setText(Util.get().generateUserStatusFromRatings(v));
+            switch ((int) v) {
+                case 1:
+                    tvRatingsText.setTextColor(Color.RED);
+                    break;
+                case 2:
+                    tvRatingsText.setTextColor(Color.YELLOW);
+                    break;
+                case 3:
+                    tvRatingsText.setTextColor(Color.parseColor("#E57373"));
+                    break;
+                case 4:
+                    tvRatingsText.setTextColor(Color.parseColor("#B71C1C"));
+                    break;
+                case 5:
+                    tvRatingsText.setTextColor(Color.BLUE);
+                    break;
+                case 6:
+                    tvRatingsText.setTextColor(Color.MAGENTA);
+                    break;
+                case 7:
+                    tvRatingsText.setTextColor(Color.parseColor("#4527A0"));
+                    break;
+                case 8:
+                    tvRatingsText.setTextColor(Color.parseColor("#4CAF50"));
+                    break;
+                case 9:
+                    tvRatingsText.setTextColor(Color.parseColor("#00E676"));
+                    break;
+                case 10:
+                    tvRatingsText.setTextColor(Color.GREEN);
+                    break;
+                default:
+                    tvRatingsText.setTextColor(Color.WHITE);
+                    break;
+            }
+        });
         return justifyView;
     }
 
@@ -96,11 +140,42 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                 if (!TextUtils.isEmpty(user.getUserType().getName())) {
                     tvUserProfession.setText(user.getUserType().getName());
                 }
+
+            if (user.getEmail() != null) {
+                tvUserEmail.setText(user.getEmail());
+            }
+            if (user.getPhoneNumber() != null) {
+                tvUserPhoneNUmber.setText(user.getPhoneNumber());
+            }
+            if (user.getOrgName() != null) {
+                tvUserOrgName.setText(user.getOrgName());
+            }
+            if (user.getDesignation() != null) {
+                tvUserDesignation.setText(user.getDesignation());
+            }
+            if (user.getAddress() != null) {
+                tvUserAddress.setText(user.getAddress());
+            }
+
         }
     }
 
     @Override
     public void initViewComponents() {
+        tvRatingsText = justifyView.findViewById(R.id.tvRatingsText);
+        tvUserPhoneNUmber = justifyView.findViewById(R.id.tvUserPhoneNUmber);
+        tvUserAddress = justifyView.findViewById(R.id.tvUserAddress);
+        llAddress = justifyView.findViewById(R.id.llAddress);
+        tvUserEmail = justifyView.findViewById(R.id.tvUserEmail);
+        trUserEmail = justifyView.findViewById(R.id.trUserEmail);
+        imgUserImage = justifyView.findViewById(R.id.imgUserImage);
+        tvDesignationLabel = justifyView.findViewById(R.id.tvDesignationLabel);
+        tvUserOrgName = justifyView.findViewById(R.id.tvUserOrgName);
+        tvUserDesignation = justifyView.findViewById(R.id.tvUserDesignation);
+        tvOrgLabel = justifyView.findViewById(R.id.tvOrgLabel);
+        tvProfessionLabel = justifyView.findViewById(R.id.tvProfessionLabel);
+        tRPhoneNumber = justifyView.findViewById(R.id.tRPhoneNumber);
+        llDesignation = justifyView.findViewById(R.id.llDesignation);
         btnJustificationSubmit = justifyView.findViewById(R.id.btnJustificationSubmit);
         llRatingsArea = justifyView.findViewById(R.id.llRatingsArea);
         llReviewArea = justifyView.findViewById(R.id.llReviewArea);
@@ -121,6 +196,34 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                 if (user.getUserSetting().getHasReview()) {
                     llReviewArea.setVisibility(View.VISIBLE);
                 }
+                if (user.getUserSetting().getEmailVisible()) {
+                    trUserEmail.setVisibility(View.VISIBLE);
+                }
+                if (user.getUserSetting().getPhoneNumberVisible()) {
+                    tRPhoneNumber.setVisibility(View.VISIBLE);
+                }
+                if (user.getUserSetting().getImageVisible()) {
+                    imgUserImage.setVisibility(View.VISIBLE);
+                }
+                if (user.getUserSetting().getAddressVisible()) {
+                    llAddress.setVisibility(View.VISIBLE);
+                }
+
+            }
+            if (user.getUserType() != null) {
+                if (user.getUserType().getIsPerson()) {
+                    tvProfessionLabel.setText("Profession:");
+                    llDesignation.setVisibility(View.VISIBLE);
+                    tvOrgLabel.setText("Organization:");
+                } else if (user.getUserType().getIsService()) {
+                    tvProfessionLabel.setText("Service:");
+                    llDesignation.setVisibility(View.VISIBLE);
+                    tvOrgLabel.setText("Company:");
+                } else if (user.getUserType().getIsBusiness()) {
+                    tvProfessionLabel.setText("Business:");
+                    tvOrgLabel.setText("Company :");
+                }
+
             }
         }
         spnUserSelectedCat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

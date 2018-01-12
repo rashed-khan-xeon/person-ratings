@@ -184,7 +184,7 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
     @Override
     public void setUserTypesToView(List<UserType> userTypes) {
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("0", "-- Select your profession --");
+        data.put("0", "--Profession/Business/Service --");
         for (UserType ut : userTypes) {
             data.put(String.valueOf(ut.getUserTypeId()), ut.getName());
         }

@@ -7,6 +7,8 @@
     <ListView
         android:id="@+id/lvUserReviewList"
         android:padding="5dp"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

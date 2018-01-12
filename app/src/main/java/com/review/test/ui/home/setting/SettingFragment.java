@@ -167,7 +167,8 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     public void setUserRatingsCategories(List<RatingsCategory> ratingsCategories) {
         this.ratingsCategories = ratingsCategories;
         UserCategoryAdapter adapter = (UserCategoryAdapter) lvCategories.getAdapter();
-        adapter.notifyDataSetChanged();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
     }
 
     @Override

@@ -95,8 +95,7 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="10dp"
                     android:hint="@string/designation"
-                    android:inputType="textMultiLine"
-                    android:maxLines="1"
+                    android:inputType="text"
                     android:singleLine="true"
                     android:textSize="14sp" />
 

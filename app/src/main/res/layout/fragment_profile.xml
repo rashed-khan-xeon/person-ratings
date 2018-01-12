@@ -17,92 +17,81 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp">
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/cardView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="70dp"
-                    android:elevation="5dp"
-                    android:minHeight="200dp"
-                    app:cardCornerRadius="2dp"
-                    app:cardUseCompatPadding="true">
-
-                    <TextView
-                        android:id="@+id/tvEditProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:background="@android:color/transparent"
-                        android:drawableLeft="@drawable/ic_edit_black_24dp"
-                        android:drawablePadding="5dp"
-                        android:padding="5dp"
-                        android:text="Edit" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="50dp"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvUserNameInProfile"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="monospace"
-                            android:padding="5dp"
-                            android:textSize="18sp" />
-
-                        <TextView
-                            android:id="@+id/tvDesignation"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            android:gravity="center"
-                            android:lineSpacingExtra="4dp"
-                            android:paddingBottom="5dp"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/tvOrgName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="serif"
-                            android:gravity="center"
-                            android:lineSpacingExtra="2dp"
-                            android:paddingEnd="5dp"
-                            android:paddingStart="5dp"
-                            android:textSize="14sp" />
-
-                        <TextView
-                            android:id="@+id/tvAddress"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:fontFamily="serif"
-                            android:gravity="center"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </android.support.v7.widget.CardView>
-
-            </RelativeLayout>
-
             <de.hdodenhof.circleimageview.CircleImageView
                 android:layout_width="110dp"
                 android:layout_height="110dp"
                 android:layout_gravity="center"
-                android:layout_marginBottom="45dp"
                 android:background="@drawable/image_border"
                 android:padding="3dp"
-                android:src="@drawable/rashed_png" />
+                android:src="@drawable/avatar" />
         </FrameLayout>
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:elevation="5dp"
+            android:minHeight="200dp"
+            app:cardCornerRadius="2dp"
+            app:cardUseCompatPadding="true">
+
+            <TextView
+                android:id="@+id/tvEditProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@android:color/transparent"
+                android:drawableLeft="@drawable/ic_edit_black_24dp"
+                android:drawablePadding="5dp"
+                android:padding="5dp"
+                android:text="Edit" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvUserNameInProfile"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="monospace"
+                    android:padding="5dp"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/tvDesignation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvOrgName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:gravity="center"
+                    android:lineSpacingExtra="2dp"
+                    android:paddingEnd="5dp"
+                    android:paddingStart="5dp"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="serif"
+                    android:gravity="center"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
@@ -214,7 +203,7 @@
                     android:paddingBottom="5dp"
                     android:paddingStart="10dp"
                     android:paddingTop="5dp"
-                    android:text="Overall rate and review "
+                    android:text="Overall Rate "
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 

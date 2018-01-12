@@ -23,6 +23,11 @@ public class HistoryTabPagerAdapter extends FragmentPagerAdapter {
         this.tabtitles.add(title);
     }
 
+    public void clear() {
+        fragments.clear();
+        tabtitles.clear();
+    }
+
     @Override
     public Fragment getItem(int position) {
         return fragments.get(position);
