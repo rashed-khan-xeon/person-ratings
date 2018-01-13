@@ -327,6 +327,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     }
 
     private void submit() {
+        Util.get().showProgress(getActivity(), true, "Processing...");
         for (Justify justify : justifies) {
             if (justify.getUserRatings() != null) {
                 presenter.submitRatings(ApiUrl.getInstance().getAddUserRatingsUrl(), RtClients.getInstance().getGson().toJson(justify.getUserRatings()));
@@ -342,11 +343,13 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     @Override
     public void showSuccessMessage(String msg) {
         Util.get().showToastMsg(context, msg);
+        Util.get().showProgress(context, false, null);
     }
 
     @Override
     public void showErrorMessage(String msg) {
         Util.get().showToastMsg(context, msg);
+        Util.get().showProgress(context, false, null);
     }
 
     @Override
@@ -355,7 +358,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
             btnJustificationSubmit.setVisibility(View.GONE);
         }
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
-        data.put("0", "--select category--");
+        data.put("0", "--Choose category--");
         for (RatingsCategory category : ratingsCategories) {
             if (category.getCategory() != null)
                 data.put(String.valueOf(category.getRatingsCatId()), category.getCategory().getName());
@@ -367,6 +370,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     @Override
     public void ratingsAdded(String msg) {
         Util.get().showToastMsg(context, msg);
+        Util.get().showProgress(context, false, null);
         clearView();
     }
 
@@ -388,6 +392,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     @Override
     public void reviewAdded(String msg) {
         Util.get().showToastMsg(context, msg);
+        Util.get().showProgress(context, false, null);
         clearView();
     }
 

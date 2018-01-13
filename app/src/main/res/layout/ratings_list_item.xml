@@ -11,18 +11,33 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/tvReviewDate"
+            android:id="@+id/tvRatingsDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:textStyle="bold" />
-
         <TextView
-            android:id="@+id/tvReviewTitle"
+            android:id="@+id/tvRatingsCatTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
             android:textSize="12sp" />
+
+        <RatingBar
+            android:id="@+id/rtHsRatings"
+            style="?attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="10" />
+
+        <TextView
+            android:id="@+id/tvRatingsStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:textSize="12sp" />
+
+
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

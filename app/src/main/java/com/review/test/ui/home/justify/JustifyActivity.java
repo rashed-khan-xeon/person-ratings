@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
+//TODO this active is not yet used
 public class JustifyActivity extends BaseActivity implements JustifyContract.JustifyView {
     private User user;
     private TextView tvUserId, tvUserFullName, tvUserProfession;
@@ -199,6 +199,7 @@ public class JustifyActivity extends BaseActivity implements JustifyContract.Jus
     }
 
     private void submit() {
+
         for (Justify justify : justifies) {
             if (justify.getUserRatings() != null) {
                 presenter.submitRatings(ApiUrl.getInstance().getAddUserRatingsUrl(), RtClients.getInstance().getGson().toJson(justify.getUserRatings()));

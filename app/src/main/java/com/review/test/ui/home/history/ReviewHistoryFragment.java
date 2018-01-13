@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.review.test.data.model.UserRatings;
 import com.review.test.data.model.UserReview;
 import com.review.test.util.Util;
 
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,6 +33,9 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
     private ListView lvUserReviewList;
     private View reviewContent;
     private HistoryContract.ReviewsPresenter presenter;
+    private Button btnPrev, btnNext;
+    private int start = 0, top = 10;
+    private LinearLayout llRevPaging;
 
     public ReviewHistoryFragment() {
         // Required empty public constructor
@@ -47,13 +53,31 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
 
     @Override
     public void initViewComponents() {
+        llRevPaging = reviewContent.findViewById(R.id.llRevPaging);
+        btnPrev = reviewContent.findViewById(R.id.btnPrev);
+        btnNext = reviewContent.findViewById(R.id.btnNext);
         lvUserReviewList = reviewContent.findViewById(R.id.lvUserReviewList);
         RatingsPref pref = RatingsApplication.getInstant().getRatingsPref();
         if (pref != null) {
             if (pref.getUser() != null) {
-                presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId()));
+                presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId(), start, top));
             }
         }
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                start += top + 1;
+                presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId(), start, top));
+            }
+        });
+        btnPrev.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (start != 0)
+                    start -= top + 1;
+                presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId(), start, top));
+            }
+        });
 
     }
 
@@ -70,8 +94,19 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
     @Override
     public void setUserReviewListToView(List<UserReview> userReviews) {
         if (userReviews != null) {
+            if (top > userReviews.size()) {
+                top = userReviews.size();
+            } else {
+                top = 10;
+            }
+            if (userReviews.size() > top) {
+                llRevPaging.setVisibility(View.VISIBLE);
+            } else {
+                llRevPaging.setVisibility(View.GONE);
+            }
             UserReviewAdapter adapter = new UserReviewAdapter(userReviews, getActivity());
             lvUserReviewList.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -114,7 +149,9 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
                 tvReviewTitle.setText(getItem(i).getComments());
             }
             if (getItem(i).getReviewDate() != null) {
-                tvReviewDate.setText(getItem(i).getReviewDate().toString());
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(getItem(i).getReviewDate());
+                tvReviewDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.MONTH) + 1 + " " + calendar.get(Calendar.YEAR));
             }
 
             return row;

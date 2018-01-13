@@ -75,8 +75,12 @@ public class ApiUrl {
         return BASE_URL + "api/v1/ratings-category-add-or-update";
     }
 
-    public String getUserReviewList(int userId) {
-        return BASE_URL + "api/v1/user-reviews-by-user-id?userId=" + userId;
+    public String getUserReviewList(int userId, int skip, int top) {
+        return BASE_URL + "api/v1/user-reviews-by-user-id?userId=" + userId + "&skip=" + skip + "&top=" + top;
+    }
+
+    public String getUserRatingsList(int userId, int skip, int top) {
+        return BASE_URL + "api/v1/user-all-ratings?userId=" + userId + "&skip=" + skip + "&top=" + top;
     }
 
 }

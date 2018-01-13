@@ -1,15 +1,47 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.review.test.ui.home.history.ReviewHistoryFragment">
 
     <ListView
         android:id="@+id/lvUserReviewList"
-        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".9"
         android:divider="@android:color/transparent"
         android:dividerHeight="2dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:padding="5dp" />
 
-</FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".1"
+        android:background="@color/white"
+        android:id="@+id/llRevPaging"
+        android:visibility="gone"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <Button
+            android:id="@+id/btnPrev"
+            style="@style/buttonBorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginRight="5dp"
+            android:text="Prev" />
+
+        <Button
+            android:id="@+id/btnNext"
+            style="@style/buttonBorder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginLeft="5dp"
+            android:text="Next" />
+    </LinearLayout>
+
+</LinearLayout>
