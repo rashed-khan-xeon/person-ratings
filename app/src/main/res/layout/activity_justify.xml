@@ -134,7 +134,7 @@
                 android:background="@color/colorAccent" />
 
 
-            <com.review.test.common.adapter.ExpandedListView
+            <com.review.ratings.common.adapter.ExpandedListView
                 android:id="@+id/lvSelectedRatRev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
