@@ -40,4 +40,19 @@ public class EditProfilePresenter implements ProfileContract.EditProfilePresente
             }
         });
     }
+
+    @Override
+    public void uploadPhoto(String url, String body) {
+        repository.post(url, Object.class, body, null, new ResponseListener<Object>() {
+            @Override
+            public void success(Object response) {
+                view.showSuccessMessage(response.toString());
+            }
+
+            @Override
+            public void error(Throwable error) {
+                view.showErrorMessage(error.getMessage());
+            }
+        });
+    }
 }

@@ -17,7 +17,7 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-    private final String BASE_URL = "http://ratings.rashedkhan.com/";
+    private final String BASE_URL = "http://192.168.1.110/ratings/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -81,6 +81,10 @@ public class ApiUrl {
 
     public String getUserRatingsList(int userId, int skip, int top) {
         return BASE_URL + "api/v1/user-all-ratings?userId=" + userId + "&skip=" + skip + "&top=" + top;
+    }
+
+    public String getUserImageUploadUrl() {
+        return BASE_URL + "api/v1/user-upload-image";
     }
 
 }

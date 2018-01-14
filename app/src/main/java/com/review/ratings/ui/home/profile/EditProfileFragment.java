@@ -1,8 +1,16 @@
 package com.review.ratings.ui.home.profile;
 
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +19,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.google.gson.JsonObject;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.config.ApiUrl;
 import com.review.ratings.core.RatingsApplication;
@@ -19,6 +28,11 @@ import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.RatingsPref;
 import com.review.ratings.data.model.User;
 import com.review.ratings.util.Util;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +44,8 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
     private Button btnUpdateProfile;
     private View contentView;
     private ProfileContract.EditProfilePresenter presenter;
+    private CircleImageView civEfProfilePic;
+    private String userTitlePhoto;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -97,6 +113,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
 
     @Override
     public void initViewComponents() {
+        civEfProfilePic = contentView.findViewById(R.id.civEfProfilePic);
         btnUpdateProfile = contentView.findViewById(R.id.btnUpdateProfile);
         ibtnSelectImage = contentView.findViewById(R.id.ibtnSelectImage);
         chkEfActive = contentView.findViewById(R.id.chkEfActive);
@@ -109,6 +126,37 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
 
             updateUser();
         });
+        ibtnSelectImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                takePhotoFromFile();
+            }
+        });
+    }
+
+    private void takePhotoFromFile() {
+        if (Environment.getExternalStorageState().equals("mounted")) {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_PICK);
+            startActivityForResult(Intent.createChooser(intent, "Select Image :"), 0);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            try {
+                Uri uri = data.getData();
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                if (bitmap != null)
+                    new GetImageAsync().execute(bitmap);
+                civEfProfilePic.setImageBitmap(bitmap);
+            } catch (Exception exception) {
+                Log.d(getClass().getSimpleName(), "File Not found");
+            }
+        }
     }
 
     private void updateUser() {
@@ -136,6 +184,11 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
             RatingsApplication.getInstant().setPreference(pref);
         }
         Util.get().showToastMsg(getActivity(), "Your profile has been updated !");
+        if (userTitlePhoto != null) {
+            JsonObject jb = new JsonObject();
+            jb.addProperty("userImageByteString", userTitlePhoto);
+            presenter.uploadPhoto(ApiUrl.getInstance().getUserImageUploadUrl(), RtClients.getInstance().getGson().toJson(jb));
+        }
     }
 
     @Override
@@ -146,5 +199,24 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
     @Override
     public void showErrorMessage(String msg) {
         Util.get().showToastMsg(getActivity(), msg);
+    }
+
+    private class GetImageAsync extends AsyncTask<Bitmap, String, String> {
+        @Override
+        protected String doInBackground(Bitmap... params) {
+            return toByte(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            userTitlePhoto = s;
+        }
+    }
+
+    private String toByte(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 }

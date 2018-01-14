@@ -30,9 +30,12 @@ public interface ProfileContract {
 
     interface EditProfilePresenter {
         void updateUserProfile(String url, String body);
+
+        void uploadPhoto(String url, String body);
     }
 
     interface EditProfileView extends BaseView {
         void profileUpdated(User user);
+
     }
 }
