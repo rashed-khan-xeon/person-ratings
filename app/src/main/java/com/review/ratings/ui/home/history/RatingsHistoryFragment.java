@@ -39,6 +39,7 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
     private Button btnRtPrev, btnRtNext;
     private int start = 0, top = 10;
     private LinearLayout llRatPaging;
+
     public RatingsHistoryFragment() {
         // Required empty public constructor
     }
@@ -68,7 +69,7 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
         btnRtNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                start += top+1;
+                start += top + 1;
                 presenter.getUserRatingsList(ApiUrl.getInstance().getUserRatingsList(pref.getUser().getUserId(), start, top));
             }
         });
@@ -76,7 +77,7 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
             @Override
             public void onClick(View view) {
                 if (start != 0) {
-                    start -= top+1;
+                    start -= top + 1;
                 }
                 presenter.getUserRatingsList(ApiUrl.getInstance().getUserRatingsList(pref.getUser().getUserId(), start, top));
             }
@@ -95,14 +96,15 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
 
     @Override
     public void setUserRatingsView(List<UserRatings> userRatings) {
-        if(top>userRatings.size()){
-            top = userRatings.size();
-        }else{
-            top =10;
-        }
-        if (userRatings.size()==top){
+        if (userRatings.size() == top) {
             llRatPaging.setVisibility(View.VISIBLE);
         }
+        if (top > userRatings.size()) {
+            top = userRatings.size();
+        } else {
+            top = 10;
+        }
+
         UserRatingsAdapter adapter = new UserRatingsAdapter(userRatings, getActivity());
         lvRatingsList.setAdapter(adapter);
         adapter.notifyDataSetChanged();

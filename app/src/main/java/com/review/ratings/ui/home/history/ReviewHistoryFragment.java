@@ -91,19 +91,19 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
 
     @Override
     public void setUserReviewListToView(List<UserReview> userReviews) {
-        if (userReviews != null) {
-            if (top > userReviews.size()) {
-                top = userReviews.size();
-            } else {
-                top = 10;
-            }
-            if (userReviews.size() == top) {
-                llRevPaging.setVisibility(View.VISIBLE);
-            }
-            UserReviewAdapter adapter = new UserReviewAdapter(userReviews, getActivity());
-            lvUserReviewList.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+        if (userReviews.size() == top) {
+            llRevPaging.setVisibility(View.VISIBLE);
+            return;
         }
+        if (top > userReviews.size()) {
+            top = userReviews.size();
+        } else {
+            top = 10;
+        }
+
+        UserReviewAdapter adapter = new UserReviewAdapter(userReviews, getActivity());
+        lvUserReviewList.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     private class UserReviewAdapter extends BaseAdapter {

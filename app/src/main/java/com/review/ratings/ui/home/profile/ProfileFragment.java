@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,13 @@ import android.widget.BaseAdapter;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.adapter.ExpandedListView;
 import com.review.ratings.config.ApiUrl;
 import com.review.ratings.core.RatingsApplication;
+import com.review.ratings.core.RtClients;
 import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.RatingSummary;
 import com.review.ratings.data.model.RatingsCategory;
@@ -23,7 +27,10 @@ import com.review.ratings.data.model.User;
 import com.review.ratings.ui.home.search.SearchFragment;
 import com.review.ratings.util.Util;
 
+import java.util.Arrays;
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment implements ProfileContract.ProfileView {
     private Context context;
@@ -32,6 +39,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
     private int userId = 0;
     private TextView tvUserNameInProfile, tvDesignation, tvOrgName, tvAddress, tvProfession, tvUserEmail, tvPhoneNumber, tvUserCategories, tvEditProfile;
     private SearchFragment.Transfer transfer;
+    private CircleImageView civEfProfilePicture;
 
     public ProfileFragment() {
 
@@ -102,6 +110,20 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
             if (!TextUtils.isEmpty(uDetails.getUserType().getName())) {
                 tvProfession.setText(uDetails.getUserType().getName());
             }
+
+        if (uDetails.getImage() != null) {
+            RtClients.getInstance().getImageLoader(getActivity()).get(ApiUrl.getInstance().getUserImageUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getImage()), new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    civEfProfilePicture.setImageBitmap(response.getBitmap());
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                }
+            });
+        }
         presenter.getUserAvgRatingByCategory(ApiUrl.getInstance().getAvgRatingUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
 
     }
@@ -139,6 +161,7 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
         tvPhoneNumber = profileView.findViewById(R.id.tvPhoneNumber);
         lvOverallRatings = profileView.findViewById(R.id.lvOverallRatings);
         tvUserCategories = profileView.findViewById(R.id.tvUserCategories);
+        civEfProfilePicture = profileView.findViewById(R.id.civEfProfilePicture);
 
     }
 

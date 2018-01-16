@@ -43,7 +43,10 @@ public class EditProfilePresenter implements ProfileContract.EditProfilePresente
 
     @Override
     public void uploadPhoto(String url, String body) {
-        repository.post(url, Object.class, body, null, new ResponseListener<Object>() {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+        repository.post(url, Object.class, body, header, new ResponseListener<Object>() {
             @Override
             public void success(Object response) {
                 view.showSuccessMessage(response.toString());

@@ -3,6 +3,8 @@ package com.review.ratings.ui.home.profile;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -19,6 +21,8 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.google.gson.JsonObject;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.config.ApiUrl;
@@ -31,6 +35,8 @@ import com.review.ratings.util.Util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -93,6 +99,19 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         } else {
             chkEfActive.setChecked(false);
         }
+        if (user.getImage() != null) {
+            RtClients.getInstance().getImageLoader(getActivity()).get(ApiUrl.getInstance().getUserImageUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getImage()), new ImageLoader.ImageListener() {
+                @Override
+                public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    civEfProfilePic.setImageBitmap(response.getBitmap());
+                }
+
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                }
+            });
+        }
         if (user.getUserType() != null) {
             if (user.getUserType().getIsBusiness()) {
                 etEfFullName.setHint("Business Name");
@@ -136,9 +155,8 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
 
     private void takePhotoFromFile() {
         if (Environment.getExternalStorageState().equals("mounted")) {
-            Intent intent = new Intent();
+            Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setType("image/*");
-            intent.setAction(Intent.ACTION_PICK);
             startActivityForResult(Intent.createChooser(intent, "Select Image :"), 0);
         }
     }
@@ -149,11 +167,14 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         if (data != null) {
             try {
                 Uri uri = data.getData();
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                InputStream image_stream = getActivity().getContentResolver().openInputStream(uri);
+                Bitmap bitmap = BitmapFactory.decodeStream(image_stream);
+                //  Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                civEfProfilePic.setImageBitmap(bitmap);
+                bitmap = getResizedBitmap(bitmap, 250);
                 if (bitmap != null)
                     new GetImageAsync().execute(bitmap);
-                civEfProfilePic.setImageBitmap(bitmap);
-            } catch (Exception exception) {
+            } catch (Exception | OutOfMemoryError exception) {
                 Log.d(getClass().getSimpleName(), "File Not found");
             }
         }
@@ -170,6 +191,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
             user.setFullName(etEfFullName.getText().toString());
             user.setActive(chkEfActive.isChecked() ? 1 : 0);
             user.setOrgName(etEfOrgName.getText().toString());
+            user.setAddress(etEfAddress.getText().toString());
             user.setDesignation(etEfDesignation.getText().toString());
             user.setPhoneNumber(etEfPhoneNumber.getText().toString());
             presenter.updateUserProfile(ApiUrl.getInstance().getUserUpdateUrl(), RtClients.getInstance().getGson().toJson(user));
@@ -187,6 +209,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         if (userTitlePhoto != null) {
             JsonObject jb = new JsonObject();
             jb.addProperty("userImageByteString", userTitlePhoto);
+            jb.addProperty("userId", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
             presenter.uploadPhoto(ApiUrl.getInstance().getUserImageUploadUrl(), RtClients.getInstance().getGson().toJson(jb));
         }
     }
@@ -218,5 +241,21 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
         byte[] byteArray = byteArrayOutputStream.toByteArray();
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+
+        float bitmapRatio = (float) width / (float) height;
+        if (bitmapRatio > 1) {
+            width = maxSize;
+            height = (int) (width / bitmapRatio);
+        } else {
+            height = maxSize;
+            width = (int) (height * bitmapRatio);
+        }
+
+        return Bitmap.createScaledBitmap(image, width, height, true);
     }
 }

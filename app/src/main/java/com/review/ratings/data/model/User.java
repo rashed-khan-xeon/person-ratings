@@ -16,6 +16,7 @@ public class User {
     private UserRole userRole;
     private String designation;
     private String orgName;
+    private String image;
     private int active;
     public User() {
     }
@@ -114,5 +115,13 @@ public class User {
 
     public void setActive(int active) {
         this.active = active;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
