@@ -1,6 +1,7 @@
 package com.review.ratings.ui.home.profile;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -52,6 +53,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
     private ProfileContract.EditProfilePresenter presenter;
     private CircleImageView civEfProfilePic;
     private String userTitlePhoto;
+    private Update updateImage;
 
     public EditProfileFragment() {
         // Required empty public constructor
@@ -99,16 +101,23 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         } else {
             chkEfActive.setChecked(false);
         }
+
         if (user.getImage() != null) {
             RtClients.getInstance().getImageLoader(getActivity()).get(ApiUrl.getInstance().getUserImageUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getImage()), new ImageLoader.ImageListener() {
                 @Override
                 public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                    civEfProfilePic.destroyDrawingCache();
                     civEfProfilePic.setImageBitmap(response.getBitmap());
                 }
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                    try {
+                        civEfProfilePic.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+                        Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -142,7 +151,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         etEfPhoneNumber = contentView.findViewById(R.id.etEfPhoneNumber);
         etEfFullName = contentView.findViewById(R.id.etEfFullName);
         btnUpdateProfile.setOnClickListener(view -> {
-
+            Util.get().showProgress(getActivity(), true, "Processing...");
             updateUser();
         });
         ibtnSelectImage.setOnClickListener(new View.OnClickListener() {
@@ -159,6 +168,12 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
             intent.setType("image/*");
             startActivityForResult(Intent.createChooser(intent, "Select Image :"), 0);
         }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        updateImage = (Update) context;
     }
 
     @Override
@@ -200,6 +215,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
 
     @Override
     public void profileUpdated(User user) {
+        Util.get().showProgress(getActivity(), false, null);
         if (user != null) {
             RatingsPref pref = RatingsApplication.getInstant().getRatingsPref();
             pref.setUser(user);
@@ -215,12 +231,20 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
     }
 
     @Override
+    public void imageUploaded() {
+        BitmapDrawable drawable = (BitmapDrawable) civEfProfilePic.getDrawable();
+        updateImage.updateProfilePicture(drawable.getBitmap());
+    }
+
+    @Override
     public void showSuccessMessage(String msg) {
+        Util.get().showProgress(getActivity(), false, null);
         Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void showErrorMessage(String msg) {
+        Util.get().showProgress(getActivity(), false, null);
         Util.get().showToastMsg(getActivity(), msg);
     }
 
@@ -237,10 +261,17 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
     }
 
     private String toByte(Bitmap bitmap) {
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
-        byte[] byteArray = byteArrayOutputStream.toByteArray();
-        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
+
+            String s = Base64.encodeToString(byteArray, Base64.DEFAULT);
+            return s;
+        } catch (RuntimeException re) {
+            Log.d("Image Upload", "toByte: " + re.getMessage());
+        }
+        return null;
     }
 
     public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
@@ -257,5 +288,9 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         }
 
         return Bitmap.createScaledBitmap(image, width, height, true);
+    }
+
+    public interface Update {
+        void updateProfilePicture(Bitmap bitmap);
     }
 }

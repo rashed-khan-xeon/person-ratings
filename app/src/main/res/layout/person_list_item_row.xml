@@ -19,8 +19,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="24dp"
             android:layout_marginTop="9dp"
-            android:layout_toEndOf="@+id/ivUserImageRow"
-            android:text="Rashed khan arif" />
+            android:layout_toEndOf="@+id/ivUserImageRow" />
 
         <TextView
             android:id="@+id/tvUserEmailRow"
@@ -28,7 +27,6 @@
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/tvUserNameRow"
             android:layout_centerVertical="true"
-            android:text="arifkhan0713@hotmail.com"
             android:textSize="12sp" />
 
         <de.hdodenhof.circleimageview.CircleImageView

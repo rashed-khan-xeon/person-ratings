@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseFragment;
 import com.review.ratings.common.adapter.ExpandedListView;
@@ -37,6 +40,7 @@ import com.review.ratings.ui.home.search.SearchFragment;
 import com.review.ratings.util.Util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -152,7 +156,36 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
             if (user.getAddress() != null) {
                 tvUserAddress.setText(user.getAddress());
             }
+            if (user.getImage() != null) {
+                if (user.getUserSetting() != null) {
+                    if (user.getUserSetting().getImageVisible()) {
+                        RtClients.getInstance().getImageLoader(context).get(ApiUrl.getInstance().getUserImageUrl(user.getImage()), new ImageLoader.ImageListener() {
+                            @Override
+                            public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
+                                imgUserImage.setImageBitmap(response.getBitmap());
+                            }
 
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                try {
+                                    imgUserImage.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+                                    Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    } else {
+                        try {
+                            imgUserImage.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+            }
         }
     }
 
@@ -204,6 +237,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                 if (user.getUserSetting().getAddressVisible()) {
                     llAddress.setVisibility(View.VISIBLE);
                 }
+
 
             }
             if (user.getUserType() != null) {

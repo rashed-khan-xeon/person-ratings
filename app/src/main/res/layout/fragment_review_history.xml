@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight=".9"
         android:divider="@android:color/transparent"
-        android:dividerHeight="2dp"
+        android:dividerHeight="1dp"
         android:padding="5dp" />
 
     <LinearLayout

@@ -153,7 +153,7 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
             if (getItem(i).getRatingsDate() != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(getItem(i).getRatingsDate());
-                tvRatingsDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.MONTH) + 1 + " " + calendar.get(Calendar.YEAR));
+                tvRatingsDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE));
             }
             if (getItem(i).getRatingsCategory() != null) {
                 if (getItem(i).getRatingsCategory().getCategory() != null) {

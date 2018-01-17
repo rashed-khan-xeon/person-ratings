@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.rashedkhan.ratings.R;
@@ -37,17 +39,18 @@ import com.review.ratings.ui.home.profile.EditProfileFragment;
 import com.review.ratings.ui.home.profile.ProfileFragment;
 import com.review.ratings.ui.home.search.SearchFragment;
 import com.review.ratings.ui.home.setting.SettingFragment;
+import com.review.ratings.util.LruBitmapCache;
+import com.review.ratings.util.Util;
 
 import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.Transfer {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.Transfer, EditProfileFragment.Update {
     ActionBarDrawerToggle toggle;
-
+    CircleImageView civEfProfilePicHeader;
     private InterstitialAd mInterstitialAd;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,10 +59,15 @@ public class HomeActivity extends BaseActivity
         addFragment(SearchFragment.class);
         MobileAds.initialize(this, getString(R.string.admob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-//        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
 
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+//        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+
+        if (!Util.get().isNetworkAvailable(this)) {
+            Util.get().showToastMsg(this, "No Network Available !");
+        }
     }
 
     private void configToolbar() {
@@ -70,7 +78,7 @@ public class HomeActivity extends BaseActivity
         drawer.addDrawerListener(toggle);
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        if (getSupportActionBar() != null){
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
         configNavHeader(navigationView.getHeaderView(0));
@@ -80,7 +88,7 @@ public class HomeActivity extends BaseActivity
         TextView tvUserName = headerView.findViewById(R.id.tvUserName);
         TextView tvUserEmail = headerView.findViewById(R.id.tvUserEmail);
         User user = RatingsApplication.getInstant().getRatingsPref().getUser();
-        CircleImageView civEfProfilePicHeader = headerView.findViewById(R.id.civEfProfilePicHeader);
+        civEfProfilePicHeader = headerView.findViewById(R.id.civEfProfilePicHeader);
         if (user != null) {
             tvUserName.setText(user.getFullName());
             tvUserEmail.setText(user.getEmail());
@@ -94,6 +102,7 @@ public class HomeActivity extends BaseActivity
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        civEfProfilePicHeader.setImageDrawable(getDrawable(R.drawable.avatar));
                         Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
                     }
                 });
@@ -165,6 +174,7 @@ public class HomeActivity extends BaseActivity
             case R.id.logoutMenu:
                 finish();
                 RatingsApplication.getInstant().removePreference();
+
                 startActivity(new Intent(this, LoginActivity.class));
                 addFragment(SettingFragment.class);
                 break;
@@ -191,11 +201,13 @@ public class HomeActivity extends BaseActivity
 
     @Override
     public void transferFragment(Fragment fragment) {
-
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
         ft.replace(R.id.homeContainer, fragment).commit();
-
     }
 
+    @Override
+    public void updateProfilePicture(Bitmap bitmap) {
+        civEfProfilePicHeader.setImageBitmap(bitmap);
+    }
 }

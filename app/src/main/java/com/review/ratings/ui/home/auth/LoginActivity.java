@@ -39,10 +39,6 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
         setContentView(R.layout.activity_login);
         presenter = new AuthPresenter(this, new HttpRepository(this));
 
-
-        if (RatingsApplication.getInstant().isLogin()) {
-            startActivity(new Intent(this, HomeActivity.class));
-        }
         initViewComponents();
 
     }

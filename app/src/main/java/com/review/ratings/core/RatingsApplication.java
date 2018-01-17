@@ -99,7 +99,7 @@ public class RatingsApplication extends Application {
 
     public boolean isLogin() {
         RatingsPref pref = getRatingsPref();
-        return pref != null;
+        return pref.getUser() != null;
     }
 
     @Override

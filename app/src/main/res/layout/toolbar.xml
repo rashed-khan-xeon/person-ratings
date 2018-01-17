@@ -8,15 +8,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
         android:gravity="center">
 
         <ImageView
             android:layout_width="wrap_content"
+            android:layout_marginRight="20dp"
             android:layout_height="wrap_content"
-            android:scaleY=".75"
-            android:scaleX=".75"
-            android:layout_marginRight="10dp"
-            android:paddingRight="10dp"
+            android:scaleY=".55"
+            android:scaleX=".55"
             android:src="@drawable/ratings_icon" />
     </LinearLayout>
 </android.support.v7.widget.Toolbar>

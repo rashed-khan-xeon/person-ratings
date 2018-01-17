@@ -1,5 +1,7 @@
 package com.review.ratings.ui.home.profile;
 
+import android.graphics.Bitmap;
+
 import com.review.ratings.data.model.RatingSummary;
 import com.review.ratings.data.model.RatingsCategory;
 import com.review.ratings.data.model.User;
@@ -36,6 +38,7 @@ public interface ProfileContract {
 
     interface EditProfileView extends BaseView {
         void profileUpdated(User user);
+        void imageUploaded();
 
     }
 }

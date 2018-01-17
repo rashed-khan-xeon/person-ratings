@@ -49,7 +49,7 @@ public class EditProfilePresenter implements ProfileContract.EditProfilePresente
         repository.post(url, Object.class, body, header, new ResponseListener<Object>() {
             @Override
             public void success(Object response) {
-                view.showSuccessMessage(response.toString());
+              view.imageUploaded();
             }
 
             @Override

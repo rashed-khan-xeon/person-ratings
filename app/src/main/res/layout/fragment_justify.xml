@@ -14,6 +14,15 @@
             android:orientation="vertical"
             android:padding="10dp">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/yellow_200"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Your identity will be hidden from the person you are rating or reviewing."
+                android:textSize="12sp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight=".7">
 
-                    <ImageView
+                    <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/imgUserImage"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
@@ -317,8 +326,7 @@
                     <TextView
                         android:id="@+id/tvRatingsText"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                         />
+                        android:layout_height="wrap_content" />
 
                     <RatingBar
                         android:id="@+id/rtRatings"

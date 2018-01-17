@@ -120,7 +120,12 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
 
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                    try {
+                        civEfProfilePicture.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+                        Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }

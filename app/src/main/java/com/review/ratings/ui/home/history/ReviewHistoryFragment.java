@@ -147,7 +147,7 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
             if (getItem(i).getReviewDate() != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(getItem(i).getReviewDate());
-                tvReviewDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " " + calendar.get(Calendar.MONTH) + 1 + " " + calendar.get(Calendar.YEAR));
+                tvReviewDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE));
             }
 
             return row;
