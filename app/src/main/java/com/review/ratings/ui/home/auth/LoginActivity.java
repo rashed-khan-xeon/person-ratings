@@ -4,16 +4,19 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.gson.Gson;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseActivity;
 import com.review.ratings.config.ApiUrl;
 import com.review.ratings.core.RatingsApplication;
+import com.review.ratings.core.RtClients;
 import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.RatingsPref;
 import com.review.ratings.data.model.User;
@@ -78,6 +81,7 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Log.e("Login info", "Login data:" + job.toString());
             presenter.doLogin(ApiUrl.getInstance().getUserLoginUrl(), job.toString());
             hideKeyboard();
         }
@@ -131,6 +135,7 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
 
     @Override
     public void loginSuccess(User user) {
+        Log.e("User", "User after login:" + user.toString());
         Util.get().showProgress(this, false, null);
         showSuccessMessage("Login successful !");
         RatingsPref pref = new RatingsPref();

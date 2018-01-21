@@ -153,7 +153,10 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
             if (getItem(i).getRatingsDate() != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(getItem(i).getRatingsDate());
-                tvRatingsDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE));
+                String ampm = calendar.get(Calendar.AM_PM) == Calendar.AM ? " AM" : " PM";
+                String txt = calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ampm;
+                tvRatingsDate.setText(txt);
+
             }
             if (getItem(i).getRatingsCategory() != null) {
                 if (getItem(i).getRatingsCategory().getCategory() != null) {
@@ -162,7 +165,8 @@ public class RatingsHistoryFragment extends Fragment implements HistoryContract.
                     }
                 }
             }
-            tvRatingsStatus.setText(Util.get().generateUserStatusFromRatings(getItem(i).getRatings()) + " ( " + getItem(i).getRatings() + " )");
+            String rt=Util.get().generateUserStatusFromRatings(getItem(i).getRatings()) + " ( " + getItem(i).getRatings() + " )";
+            tvRatingsStatus.setText(rt);
             switch ((int) getItem(i).getRatings()) {
                 case 1:
                     tvRatingsStatus.setTextColor(Color.RED);

@@ -219,14 +219,14 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
                                 if (users.get(position).getUserSetting().getImageVisible()) {
                                     holder.ivUserImageRow.setImageBitmap(response.getBitmap());
                                 } else {
-                                    holder.ivUserImageRow.setImageDrawable(context.getDrawable(R.drawable.avatar));
+                                    holder.ivUserImageRow.setImageDrawable(context.getResources().getDrawable(R.drawable.avatar));
                                 }
                             }
                     }
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        holder.ivUserImageRow.setImageDrawable(context.getDrawable(R.drawable.avatar));
+                        holder.ivUserImageRow.setImageDrawable(context.getResources().getDrawable(R.drawable.avatar));
                         Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
                     }
                 });

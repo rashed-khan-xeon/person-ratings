@@ -27,6 +27,7 @@ public class ReviewPresenter implements HistoryContract.ReviewsPresenter {
     @Override
     public void getUserReviewList(String url) {
         Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
 
         repository.getAll(url, UserReview[].class, header, new ResponseListener<List<UserReview>>() {

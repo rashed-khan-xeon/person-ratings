@@ -1,9 +1,11 @@
 package com.review.ratings.util;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
@@ -34,7 +36,7 @@ public class Util {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(msg);
             progressDialog.setProgressStyle(android.R.style.Widget_DeviceDefault_Light_ProgressBar_Horizontal);
-            progressDialog.create();
+          //  progressDialog.create();
             progressDialog.show();
         } else {
             if (progressDialog != null) {

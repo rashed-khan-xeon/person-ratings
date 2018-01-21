@@ -1,12 +1,16 @@
 package com.review.ratings.ui.home.auth;
 
+import android.util.Log;
+
 import com.review.ratings.core.ResponseListener;
 import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.User;
 import com.review.ratings.data.model.UserType;
 import com.review.ratings.data.repository.IHttpRepository;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by arifk on 30.12.17.
@@ -23,7 +27,9 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
 
     @Override
     public void doSignUp(String url, String body) {
-        repository.post(url, User.class, body, null, new ResponseListener<User>() {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        repository.post(url, User.class, body, header, new ResponseListener<User>() {
             @Override
             public void success(User response) {
                 view.signUpSuccess(response);
@@ -38,7 +44,10 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
 
     @Override
     public void doLogin(String url, String loginData) {
-        repository.post(url, User.class, loginData, null, new ResponseListener<User>() {
+        Log.e("Login info", "Login data:" + loginData);
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        repository.post(url, User.class, loginData, header, new ResponseListener<User>() {
             @Override
             public void success(User response) {
                 view.loginSuccess(response);
@@ -54,7 +63,9 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
     @Override
     public void getUserTypes(String url) {
 
-        repository.getAll(url, UserType[].class, null, new ResponseListener<List<UserType>>() {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        repository.getAll(url, UserType[].class, header, new ResponseListener<List<UserType>>() {
             @Override
             public void success(List<UserType> response) {
                 view.setUserTypesToView(response);

@@ -26,6 +26,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
     @Override
     public void getUserSelectedCategory(String url) {
         Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
         repository.getAll(url, RatingsCategory[].class, header, new ResponseListener<List<RatingsCategory>>() {
             @Override
@@ -43,6 +44,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
     @Override
     public void submitRatings(String url, String body) {
         Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
         repository.post(url, Object.class, body, header, new ResponseListener<Object>() {
             @Override
@@ -60,6 +62,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
     @Override
     public void submitReview(String url, String body) {
         Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
         repository.post(url, Object.class, body, header, new ResponseListener<Object>() {
             @Override

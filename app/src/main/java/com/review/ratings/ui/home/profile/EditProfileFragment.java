@@ -113,7 +113,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     try {
-                        civEfProfilePic.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+                        civEfProfilePic.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.avatar));
                         Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
                     } catch (Exception e) {
                         e.printStackTrace();

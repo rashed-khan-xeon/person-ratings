@@ -4,9 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.review.ratings.config.ConfigKeys;
 import com.review.ratings.data.model.RatingsPref;
+import com.review.ratings.data.model.User;
 
 import java.util.Map;
 
@@ -34,24 +36,25 @@ public class RatingsApplication extends Application {
 
     public void setPreference(RatingsPref ratingsPref) {
         String pref = RtClients.getInstance().getGson().toJson(ratingsPref);
-        SharedPreferences sharedPref = this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(ConfigKeys.getInstant().PREF_NAME, pref);
-        editor.apply();
+        editor.commit();
     }
 
     public void removePreference() {
         String pref = "";
-        SharedPreferences sharedPref = this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref =PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(ConfigKeys.getInstant().PREF_NAME, pref);
-        editor.apply();
+        editor.commit();
     }
 
     public RatingsPref getRatingsPref() {
         String defaultValue = RtClients.getInstance().getGson().toJson(new RatingsPref());
-        SharedPreferences sharedPref = this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
         String pref = sharedPref.getString(ConfigKeys.getInstant().PREF_NAME, defaultValue);
+        Log.e("Ratings", "getRatingsPref: "+pref );
         return RtClients.getInstance().getGson().fromJson(pref, RatingsPref.class);
     }
 
@@ -99,7 +102,7 @@ public class RatingsApplication extends Application {
 
     public boolean isLogin() {
         RatingsPref pref = getRatingsPref();
-        return pref.getUser() != null;
+        return pref != null && pref.getUser() != null;
     }
 
     @Override

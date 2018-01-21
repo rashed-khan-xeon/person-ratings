@@ -124,4 +124,23 @@ public class User {
     public void setImage(String image) {
         this.image = image;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", address='" + address + '\'' +
+                ", userTypeId=" + userTypeId +
+                ", userType=" + userType +
+                ", userSetting=" + userSetting +
+                ", userRole=" + userRole +
+                ", designation='" + designation + '\'' +
+                ", orgName='" + orgName + '\'' +
+                ", image='" + image + '\'' +
+                ", active=" + active +
+                '}';
+    }
 }

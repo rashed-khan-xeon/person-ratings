@@ -168,7 +168,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 try {
-                                    imgUserImage.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+                                    imgUserImage.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.avatar));
                                     Log.d(getClass().getSimpleName(), Arrays.toString(error.getStackTrace()));
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -177,7 +177,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                         });
                     } else {
                         try {
-                            imgUserImage.setImageDrawable(getActivity().getDrawable(R.drawable.avatar));
+                            imgUserImage.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.avatar));
 
                         } catch (Exception e) {
                             e.printStackTrace();

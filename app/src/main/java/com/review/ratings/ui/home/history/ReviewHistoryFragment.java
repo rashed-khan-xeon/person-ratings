@@ -44,6 +44,7 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         reviewContent = inflater.inflate(R.layout.fragment_review_history, container, false);
+        Util.get().showProgress(getActivity(),true,"Processing...");
         presenter = new ReviewPresenter(this, new HttpRepository(getActivity()));
         initViewComponents();
         return reviewContent;
@@ -81,16 +82,19 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
 
     @Override
     public void showSuccessMessage(String msg) {
+        Util.get().showProgress(getActivity(),false,null);
         Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void showErrorMessage(String msg) {
+        Util.get().showProgress(getActivity(),false,null);
         Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void setUserReviewListToView(List<UserReview> userReviews) {
+        Util.get().showProgress(getActivity(),false,null);
         if (userReviews.size() == top) {
             llRevPaging.setVisibility(View.VISIBLE);
             return;
@@ -147,9 +151,10 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
             if (getItem(i).getReviewDate() != null) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(getItem(i).getReviewDate());
-                tvReviewDate.setText(calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE));
+                String ampm = calendar.get(Calendar.AM_PM) == Calendar.AM ? " AM" : " PM";
+                String txt = calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ampm;
+                tvReviewDate.setText(txt);
             }
-
             return row;
         }
     }
