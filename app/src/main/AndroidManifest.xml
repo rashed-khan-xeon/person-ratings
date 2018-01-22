@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:name="com.review.ratings.core.RatingsApplication"
         android:allowBackup="true"
@@ -15,10 +16,25 @@
         android:roundIcon="@mipmap/ratings_icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
+
         <activity android:name="com.review.ratings.ui.home.auth.LoginActivity">
 
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="http"
+                    android:host="rashedkhan.com"
+                    android:pathPattern="/ " />
+            </intent-filter>
         </activity>
-        <activity android:name="com.review.ratings.common.BaseActivity" />
+        <activity android:name="com.review.ratings.common.BaseActivity"></activity>
         <activity android:name="com.review.ratings.ui.home.auth.SignUpActivity" />
         <activity
             android:name="com.review.ratings.ui.home.HomeActivity"

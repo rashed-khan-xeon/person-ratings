@@ -2,6 +2,7 @@ package com.review.ratings.ui.home.auth;
 
 import android.content.Intent;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -44,6 +45,10 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
 
         initViewComponents();
 
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
 
     private void attemptLogin() {

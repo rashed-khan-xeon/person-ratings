@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1093872209840",
+    "firebase_url": "https://ratings-bedcd.firebaseio.com",
+    "project_id": "ratings-bedcd",
+    "storage_bucket": "ratings-bedcd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1093872209840:android:0757a2ec2d850497",
+        "android_client_info": {
+          "package_name": "com.rashedkhan.ratings"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1093872209840-3e2lbodrle5c03761071716fmghgf8ej.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rashedkhan.ratings",
+            "certificate_hash": "de748946570fce50da6c14ada5eff11104e66c14"
+          }
+        },
+        {
+          "client_id": "1093872209840-8g05vcjfk47kqr3kmjd4p03kksmaq2sc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0KKcv4GE4l4-hwr894oQ1HhAIfViMPEQ"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1093872209840-8g05vcjfk47kqr3kmjd4p03kksmaq2sc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -154,6 +154,7 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
 
     @Override
     public void showErrorMessage(String msg) {
+        Util.get().showToastMsg(this, msg);
         Util.get().showProgress(this, false, null);
     }
 

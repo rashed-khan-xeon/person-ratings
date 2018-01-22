@@ -59,15 +59,20 @@ public class HomeActivity extends BaseActivity
         addFragment(SearchFragment.class);
         MobileAds.initialize(this, getString(R.string.admob_app_id));
         mInterstitialAd = new InterstitialAd(this);
-//        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
+        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
 
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+//        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
 
         if (!Util.get().isNetworkAvailable(this)) {
             Util.get().showToastMsg(this, "No Network Available !");
         }
+
+        // ATTENTION: This was auto-generated to handle app links.
+        Intent appLinkIntent = getIntent();
+        String appLinkAction = appLinkIntent.getAction();
+        Uri appLinkData = appLinkIntent.getData();
     }
 
     private void configToolbar() {
