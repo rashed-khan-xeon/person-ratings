@@ -44,17 +44,23 @@ public class RatingsApplication extends Application {
 
     public void removePreference() {
         String pref = "";
-        SharedPreferences sharedPref =PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(ConfigKeys.getInstant().PREF_NAME, pref);
         editor.commit();
+    }
+
+    public User getUser() {
+        if (getRatingsPref() != null)
+            return getRatingsPref().getUser();
+        return null;
     }
 
     public RatingsPref getRatingsPref() {
         String defaultValue = RtClients.getInstance().getGson().toJson(new RatingsPref());
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());//this.getSharedPreferences(ConfigKeys.getInstant().PREF_FILE, Context.MODE_PRIVATE);
         String pref = sharedPref.getString(ConfigKeys.getInstant().PREF_NAME, defaultValue);
-        Log.e("Ratings", "getRatingsPref: "+pref );
+        Log.e("Ratings", "getRatingsPref: " + pref);
         return RtClients.getInstance().getGson().fromJson(pref, RatingsPref.class);
     }
 

@@ -1,7 +1,9 @@
 package com.review.ratings.ui.home.setting;
 
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -12,12 +14,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseFragment;
+import com.review.ratings.common.adapter.ExpandedListView;
 import com.review.ratings.config.ApiUrl;
 import com.review.ratings.core.RatingsApplication;
 import com.review.ratings.core.RtClients;
@@ -27,9 +33,13 @@ import com.review.ratings.data.model.RatingsCategory;
 import com.review.ratings.data.model.RatingsPref;
 import com.review.ratings.data.model.User;
 import com.review.ratings.data.model.UserSetting;
+import com.review.ratings.ui.home.auth.LoginActivity;
 import com.review.ratings.ui.home.search.SearchFragment;
 import com.review.ratings.util.Util;
 
+import org.w3c.dom.Text;
+
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -40,20 +50,30 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     private View settingView;
     private CheckBox chkHasAddress, chkHasEmail, chkHasPhone, chkHasReview, chkHasRatings, chkProfileImage;
     private Button btnSettingSaveChanges;
-    private ListView lvCategories;
+    private ExpandedListView lvCategories;
     private SettingContract.SettingPresenter presenter;
     private List<Category> categoryList;
     private List<RatingsCategory> ratingsCategories;
     private InterstitialAd mInterstitialAd;
-    public SettingFragment() {
-    }
+    private TextView tvCreateYourCategory, tvCheckCategory;
+    Dialog dialog;
+    private User user;
 
+    public SettingFragment() {
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         settingView = inflater.inflate(R.layout.fragment_setting, container, false);
+        if (RatingsApplication.getInstant().getUser() != null) {
+            user = RatingsApplication.getInstant().getUser();
+        } else {
+            RatingsApplication.getInstant().removePreference();
+            startActivity(new Intent(getActivity(), LoginActivity.class));
+        }
         presenter = new SettingPresenter(this, new HttpRepository(context));
         initViewComponents();
         setPrivacyToView();
@@ -65,24 +85,25 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     }
 
     private void setPrivacyToView() {
-        if (RatingsApplication.getInstant().getRatingsPref() != null) {
-            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null) {
-                User user = RatingsApplication.getInstant().getRatingsPref().getUser();
-                if (user.getUserSetting() != null) {
-                    UserSetting us = user.getUserSetting();
-                    chkHasAddress.setChecked(us.getAddressVisible());
-                    chkHasEmail.setChecked(us.getEmailVisible());
-                    chkHasPhone.setChecked(us.getPhoneNumberVisible());
-                    chkHasRatings.setChecked(us.getHasRating());
-                    chkHasReview.setChecked(us.getHasReview());
-                    chkProfileImage.setChecked(us.getImageVisible());
-                }
+
+        if (user != null) {
+            if (user.getUserSetting() != null) {
+                UserSetting us = user.getUserSetting();
+                chkHasAddress.setChecked(us.getAddressVisible());
+                chkHasEmail.setChecked(us.getEmailVisible());
+                chkHasPhone.setChecked(us.getPhoneNumberVisible());
+                chkHasRatings.setChecked(us.getHasRating());
+                chkHasReview.setChecked(us.getHasReview());
+                chkProfileImage.setChecked(us.getImageVisible());
             }
         }
+
     }
 
     @Override
     public void initViewComponents() {
+        tvCheckCategory = settingView.findViewById(R.id.tvCheckCategory);
+        tvCreateYourCategory = settingView.findViewById(R.id.tvCreateYourCategory);
         lvCategories = settingView.findViewById(R.id.lvCategories);
         btnSettingSaveChanges = settingView.findViewById(R.id.btnSettingSaveChanges);
         chkHasAddress = settingView.findViewById(R.id.chkHasAddress);
@@ -91,11 +112,10 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         chkHasReview = settingView.findViewById(R.id.chkHasReview);
         chkHasRatings = settingView.findViewById(R.id.chkHasRatings);
         chkProfileImage = settingView.findViewById(R.id.chkProfileImage);
-        if (RatingsApplication.getInstant().getRatingsPref() != null)
-            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null) {
-                presenter.getCategoriesByUserType(ApiUrl.getInstance().getCategoriesByUserTypeIdUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserTypeId()));
-                presenter.getUserRatingsCategory(ApiUrl.getInstance().getUserRatingsCategoryUrl(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
-            }
+        if (user != null) {
+            presenter.getCategoriesByUserId(ApiUrl.getInstance().getCategoriesByUserIdUrl(user.getUserId()));
+            presenter.getUserRatingsCategory(ApiUrl.getInstance().getUserRatingsCategoryUrl(user.getUserId()));
+        }
         btnSettingSaveChanges.setOnClickListener(view -> {
             if (mInterstitialAd.isLoaded()) {
                 mInterstitialAd.show();
@@ -104,22 +124,47 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             }
             updateSetting();
         });
+        tvCreateYourCategory.setOnClickListener(view -> {
+            addCategory();
+        });
+    }
+
+    private void addCategory() {
+        dialog = new Dialog(getActivity());
+        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.add_category, null);
+        dialog.setContentView(layout);
+        dialog.show();
+        Button btnAddCategory = layout.findViewById(R.id.btnAddCategory);
+        EditText etCategoryName = layout.findViewById(R.id.etCategoryName);
+        btnAddCategory.setOnClickListener(view -> {
+            if (etCategoryName.getText().toString().isEmpty()) {
+                Util.get().showToastMsg(getActivity(), "Please type category name");
+                return;
+            }
+            Category category = new Category();
+            category.setCatId(0);
+            category.setActive(1);
+            category.setName(etCategoryName.getText().toString());
+            category.setUserId(user.getUserId());
+            category.setUserTypeId(user.getUserTypeId());
+            presenter.addCategory(ApiUrl.getInstance().getAddCategoryUrl(), RtClients.getInstance().getGson().toJson(category));
+        });
+
+
     }
 
     private void updateSetting() {
-        UserSetting setting = new UserSetting();
-        setting.setUserId(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId());
-        setting.setAddressVisible(chkHasAddress.isChecked() ? 1 : 0);
-        setting.setEmailVisible(chkHasEmail.isChecked() ? 1 : 0);
-        setting.setHasRating(chkHasRatings.isChecked() ? 1 : 0);
-        setting.setHasReview(chkHasReview.isChecked() ? 1 : 0);
-        setting.setImageVisible(chkProfileImage.isChecked() ? 1 : 0);
-        setting.setPhoneNumberVisible(chkHasPhone.isChecked() ? 1 : 0);
-        if (RatingsApplication.getInstant().getRatingsPref() != null)
-            if (RatingsApplication.getInstant().getRatingsPref().getUser() != null)
-                presenter.updateUserSetting(ApiUrl.getInstance().getUpdateUserSettingsUrl(), RtClients.getInstance().getGson().toJson(setting));
-
-
+        if (user != null) {
+            UserSetting setting = new UserSetting();
+            setting.setUserId(user.getUserId());
+            setting.setAddressVisible(chkHasAddress.isChecked() ? 1 : 0);
+            setting.setEmailVisible(chkHasEmail.isChecked() ? 1 : 0);
+            setting.setHasRating(chkHasRatings.isChecked() ? 1 : 0);
+            setting.setHasReview(chkHasReview.isChecked() ? 1 : 0);
+            setting.setImageVisible(chkProfileImage.isChecked() ? 1 : 0);
+            setting.setPhoneNumberVisible(chkHasPhone.isChecked() ? 1 : 0);
+            presenter.updateUserSetting(ApiUrl.getInstance().getUpdateUserSettingsUrl(), RtClients.getInstance().getGson().toJson(setting));
+        }
     }
 
     @Override
@@ -150,26 +195,57 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     public void setCategories(List<Category> categories) {
         if (categories != null) {
             if (categories.size() > 0) {
+                tvCheckCategory.setVisibility(View.VISIBLE);
                 categoryList = categories;
                 UserCategoryAdapter adapter = new UserCategoryAdapter(categoryList);
                 lvCategories.setAdapter(adapter);
-                int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
-                adapter.setItemCheckedListener(position -> {
-                    RatingsCategory rc = new RatingsCategory();
-                    rc.setUserId(userId);
-                    rc.setCatId(categoryList.get(position).getCatId());
-                    rc.setActive(1);
-                    presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
-                });
-                adapter.setItemCheckedRemovedListener(position -> {
-                    RatingsCategory rc = new RatingsCategory();
-                    rc.setUserId(userId);
-                    rc.setCatId(categoryList.get(position).getCatId());
-                    rc.setActive(0);
-                    presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
-                });
+                lvCategories.setExpanded(true);
+                User user = RatingsApplication.getInstant().getRatingsPref().getUser();
+                adapter.setItemCheckedListener(position -> activeRatingsCat(categories.get(position), user.getUserId()));
+                adapter.setItemCheckedRemovedListener(position -> inActiveRatingsCat(categories.get(position), user.getUserId()));
             }
         }
+    }
+
+    @Override
+    public void categoryAdded(Category category) {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        Util.get().showToastMsg(getActivity(), "Added");
+        if (categoryList == null) {
+            categoryList = new LinkedList<>();
+        }
+        this.categoryList.add(category);
+        UserCategoryAdapter adapter = (UserCategoryAdapter) lvCategories.getAdapter();
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        } else {
+            tvCheckCategory.setVisibility(View.VISIBLE);
+            UserCategoryAdapter newAdapter = new UserCategoryAdapter(categoryList);
+            lvCategories.setAdapter(newAdapter);
+            lvCategories.setExpanded(true);
+            newAdapter.setItemCheckedListener(position -> activeRatingsCat(category, user.getUserId()));
+            newAdapter.setItemCheckedRemovedListener(position -> inActiveRatingsCat(category, user.getUserId()));
+        }
+        activeRatingsCat(category, category.getUserId());
+    }
+
+    private void activeRatingsCat(Category cat, int userId) {
+        RatingsCategory rc = new RatingsCategory();
+        rc.setUserId(userId);
+        rc.setCatId(cat.getCatId());
+        rc.setActive(1);
+        presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
+    }
+
+    private void inActiveRatingsCat(Category cat, int userId) {
+        RatingsCategory rc = new RatingsCategory();
+        rc.setUserId(userId);
+        rc.setCatId(cat.getCatId());
+        rc.setActive(0);
+        presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
+
     }
 
     @Override
@@ -235,19 +311,29 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             if (!TextUtils.isEmpty(getItem(i).getName())) {
                 chkUserCategory.setText(categories.get(i).getName());
             }
-            if (ratingsCategories != null)
+            if (ratingsCategories != null) {
                 for (RatingsCategory rtc : ratingsCategories) {
                     if (rtc.getCatId() == categories.get(i).getCatId()) {
                         chkUserCategory.setChecked(true);
                     }
                 }
-            chkUserCategory.setOnClickListener(view1 -> {
-                if (chkUserCategory.isChecked()) {
-                    checkClickListener.onItemClick(i);
-                } else {
-                    unCheckClickListener.onItemClick(i);
+            } else {
+                if (categories != null) {
+                    for (Category rtc : categories) {
+                        if (!chkUserCategory.isChecked())
+                            chkUserCategory.setChecked(true);
+
+                    }
                 }
-            });
+            }
+            if (chkUserCategory != null)
+                chkUserCategory.setOnClickListener(view1 -> {
+                    if (chkUserCategory.isChecked()) {
+                        checkClickListener.onItemClick(i);
+                    } else {
+                        unCheckClickListener.onItemClick(i);
+                    }
+                });
 
             return row;
         }

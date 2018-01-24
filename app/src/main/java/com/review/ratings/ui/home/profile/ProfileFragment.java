@@ -136,10 +136,13 @@ public class ProfileFragment extends Fragment implements ProfileContract.Profile
     @Override
     public void setUserSelectedCategory(List<RatingsCategory> ratingsCategories) {
         StringBuilder sb = new StringBuilder();
+        sb.append("\n");
         for (RatingsCategory rc : ratingsCategories) {
-            sb.append("* ");
-            sb.append(rc.getCategory().getName());
-            sb.append("\n");
+            if (rc.getCategory() != null) {
+                sb.append("* ");
+                sb.append(rc.getCategory().getName());
+                sb.append("\n");
+            }
         }
         tvUserCategories.setText(sb.toString());
     }

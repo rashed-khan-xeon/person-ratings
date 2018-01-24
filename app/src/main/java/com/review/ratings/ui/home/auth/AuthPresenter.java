@@ -2,11 +2,13 @@ package com.review.ratings.ui.home.auth;
 
 import android.util.Log;
 
+import com.android.volley.VolleyError;
 import com.review.ratings.core.ResponseListener;
 import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.User;
 import com.review.ratings.data.model.UserType;
 import com.review.ratings.data.repository.IHttpRepository;
+import com.review.ratings.util.Util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +39,7 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(error.getMessage());
+                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }
@@ -55,7 +57,7 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(error.getMessage());
+                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }
@@ -73,7 +75,7 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(error.getMessage());
+                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }

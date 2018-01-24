@@ -61,4 +61,10 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="update">Update</string>
     <string name="asset_statements" translatable="false">[{\n  \"relation\": [\"delegate_permission/common.handle_all_urls\"],\n  \"target\": {\n    \"namespace\": \"web\",\n    \"site\": \"https://ratings.rashedkhan.com\",\n  }\n}]</string>
+    <string name="change_password">Change password</string>
+    <string name="change_your_password">Change your password</string>
+    <string name="current_password">Current password</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="change">Change</string>
 </resources>
