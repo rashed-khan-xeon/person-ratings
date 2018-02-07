@@ -10,11 +10,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="5dp">
 
         <TextView
             android:id="@+id/tvUserNameRow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="24dp"
@@ -31,13 +31,13 @@
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/ivUserImageRow"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_alignParentStart="true"
-            android:scaleX=".80"
-            android:scaleY=".80"
             android:layout_alignParentTop="true"
             android:background="@drawable/image_border"
+            android:scaleX=".90"
+            android:scaleY=".90"
             android:src="@drawable/avatar" />
 
     </RelativeLayout>

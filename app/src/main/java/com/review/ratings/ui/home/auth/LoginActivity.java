@@ -146,7 +146,11 @@ public class LoginActivity extends BaseActivity implements AuthContract.AuthView
         RatingsPref pref = new RatingsPref();
         pref.setUser(user);
         RatingsApplication.getInstant().setPreference(pref);
-        startActivity(new Intent(this, HomeActivity.class));
+        if (!user.hasVerified()) {
+            startActivity(new Intent(this, VerificationActivity.class));
+        } else {
+            startActivity(new Intent(this, HomeActivity.class));
+        }
     }
 
     @Override

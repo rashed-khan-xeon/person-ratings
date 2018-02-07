@@ -111,13 +111,18 @@ public class Util {
     }
 
     public String getMessage(VolleyError error) {
+        if (error == null) {
+            return "No Response!";
+        }
+        if (error.getMessage() == null) {
+            return "Failed";
+        }
         if (error.networkResponse == null) {
             return "Connection error !";
         }
         if (error.networkResponse.data == null) {
             return "Connection error !";
         }
-        String msg = new String(error.networkResponse.data);
-        return msg;
+        return new String(error.networkResponse.data);
     }
 }

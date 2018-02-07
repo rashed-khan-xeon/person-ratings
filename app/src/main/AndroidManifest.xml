@@ -21,7 +21,6 @@
             android:resource="@string/asset_statements" />
 
         <activity android:name="com.review.ratings.ui.home.auth.LoginActivity">
-
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -29,14 +28,15 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="http"
                     android:host="rashedkhan.com"
-                    android:pathPattern="/ " />
+                    android:pathPattern="/ "
+                    android:scheme="http" />
             </intent-filter>
         </activity>
-        <activity android:name="com.review.ratings.common.BaseActivity"></activity>
+        <activity android:name="com.review.ratings.common.BaseActivity" />
         <activity android:name="com.review.ratings.ui.home.auth.SignUpActivity" />
         <activity
+            android:windowSoftInputMode="adjustPan"
             android:name="com.review.ratings.ui.home.HomeActivity"
             android:theme="@style/AppTheme">
 
@@ -50,6 +50,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.review.ratings.ui.home.auth.VerificationActivity"></activity>
     </application>
 
 </manifest>

@@ -17,7 +17,7 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-    private final String BASE_URL = "http://ratings.rashedkhan.com/";
+    private final String BASE_URL = "http://192.168.1.118/ratings/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -25,6 +25,14 @@ public class ApiUrl {
 
     public String getUserLoginUrl() {
         return BASE_URL + "api/v1/user-login";
+    }
+
+    public String getSendCodeUrl(int userId) {
+        return BASE_URL + "api/v1/send-code?userId=" + userId;
+    }
+
+    public String getCheckCodeUrl() {
+        return BASE_URL + "api/v1/check-code";
     }
 
     public String getChangePasswordUrl() {

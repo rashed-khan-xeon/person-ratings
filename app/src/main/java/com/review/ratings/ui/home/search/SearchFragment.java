@@ -1,6 +1,7 @@
 package com.review.ratings.ui.home.search;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -22,14 +23,21 @@ import com.android.volley.toolbox.ImageLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.common.api.Api;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseFragment;
+import com.review.ratings.common.adapter.ExpandedListView;
+import com.review.ratings.common.adapter.RatingAdapter;
 import com.review.ratings.config.ApiUrl;
 import com.review.ratings.core.RatingsApplication;
 import com.review.ratings.core.RtClients;
 import com.review.ratings.data.implementation.HttpRepository;
+import com.review.ratings.data.model.RatingSummary;
 import com.review.ratings.data.model.User;
 import com.review.ratings.ui.home.justify.JustifyFragment;
+import com.review.ratings.ui.home.profile.ProfileContract;
+import com.review.ratings.ui.home.profile.ProfileFragment;
+import com.review.ratings.ui.home.profile.ProfilePresenter;
 import com.review.ratings.util.Util;
 
 import java.io.UnsupportedEncodingException;
@@ -47,12 +55,12 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     private RecyclerView rcvPersonList;
     private SearchContract.SearchPresenter presenter;
     private EditText etUserNameOrEmail;
-    PersonListAdapter adapter;
+    private ExpandedListView lvOverallRatings;
+    private PersonListAdapter adapter;
     private List<User> users;
-
+    private CardView cvOverallRate;
 
     View homeView;
-    private CardView demoPerson;
     private Button btnSearch;
 
     public SearchFragment() {
@@ -85,10 +93,10 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     @Override
     public void initViewComponents() {
         AdView adView = homeView.findViewById(R.id.adView);
+        lvOverallRatings = homeView.findViewById(R.id.lvOverallRatings);
+        cvOverallRate = homeView.findViewById(R.id.cvOverallRate);
         btnSearch = homeView.findViewById(R.id.btnSearch);
-        demoPerson = homeView.findViewById(R.id.demoPerson);
         etUserNameOrEmail = homeView.findViewById(R.id.etUserNameOrEmail);
-        rcvPersonList = homeView.findViewById(R.id.rcvPersonList);
         btnSearch.setOnClickListener(view -> {
             if (!getUrl().isEmpty()) {
                 hideKeyboard();
@@ -96,6 +104,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
                 presenter.searchUser(ApiUrl.getInstance().getSearchUserUrl(getUrl()));
             }
         });
+        if (RatingsApplication.getInstant().getUser() != null)
+            presenter.getUserAvgRatingByCategory(ApiUrl.getInstance().getAvgRatingUrl(RatingsApplication.getInstant().getUser().getUserId()));
         adView.loadAd(new AdRequest.Builder().build());
 
     }
@@ -123,20 +133,22 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         users = userList;
         Util.get().showProgress(getActivity(), false, null);
         if (users != null) {
+            Dialog dialog = new Dialog(getActivity());
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_search_result, null);
+            dialog.setContentView(view);
+            dialog.show();
+            rcvPersonList = view.findViewById(R.id.rcvPersonList);
             adapter = new PersonListAdapter(users, getActivity());
             RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
             rcvPersonList.setLayoutManager(lm);
             rcvPersonList.setItemAnimator(new DefaultItemAnimator());
             rcvPersonList.setAdapter(adapter);
             adapter.setOnItemClickListener(position -> {
-//                Intent i = new Intent(getActivity(), JustifyActivity.class);
-//                i.putExtra("user", RtClients.getInstance().getGson().toJson(users.get(position)));
-//                getActivity().startActivity(i);
-//                getActivity().overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 if (users.get(position).getUserId() == RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()) {
                     Util.get().showToastMsg(getActivity(), "You can't justify yourself !");
                     return;
                 }
+                dialog.dismiss();
                 JustifyFragment jsf = new JustifyFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("user", RtClients.getInstance().getGson().toJson(users.get(position)));
@@ -144,6 +156,17 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
                 transfer.transferFragment(jsf);
             });
         }
+    }
+
+    @Override
+    public void setUserAvgRatingsToView(List<RatingSummary> ratingsCategories) {
+        if (ratingsCategories != null)
+            if (ratingsCategories.size() > 0) {
+                cvOverallRate.setVisibility(View.VISIBLE);
+                RatingAdapter adapter = new RatingAdapter(getContext(), ratingsCategories);
+                lvOverallRatings.setAdapter(adapter);
+                lvOverallRatings.setExpanded(true);
+            }
     }
 
     @Override
@@ -195,7 +218,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
 
         @Override
         public Holder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new Holder(LayoutInflater.from(context).inflate(R.layout.person_list_item_row, parent, false));
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.person_list_item_row, parent, false);
+            return new Holder(view);
         }
 
         @Override

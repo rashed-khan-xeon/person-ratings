@@ -3,6 +3,7 @@ package com.review.ratings.ui.home.auth;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.review.ratings.core.RatingsApplication;
 import com.review.ratings.core.ResponseListener;
 import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.User;
@@ -18,13 +19,19 @@ import java.util.Map;
  * Created by arifk on 30.12.17.
  */
 
-public class AuthPresenter implements AuthContract.AuthPresenter {
+public class AuthPresenter implements AuthContract.AuthPresenter, AuthContract.VerifyPresenter {
     private IHttpRepository repository;
     private AuthContract.AuthView view;
+    private AuthContract.VerifyView verifyView;
 
     public AuthPresenter(AuthContract.AuthView authView, HttpRepository repository) {
         this.repository = repository;
         view = authView;
+    }
+
+    public AuthPresenter(AuthContract.VerifyView verifyView, HttpRepository repository) {
+        this.repository = repository;
+        this.verifyView = verifyView;
     }
 
     @Override
@@ -76,6 +83,42 @@ public class AuthPresenter implements AuthContract.AuthPresenter {
             @Override
             public void error(Throwable error) {
                 view.showErrorMessage(Util.get().getMessage((VolleyError) error));
+            }
+        });
+    }
+
+    @Override
+    public void sendVerificationCode(String url) {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getUser().getUserId()));
+        repository.get(url, Object.class, header, new ResponseListener<Object>() {
+            @Override
+            public void success(Object response) {
+                verifyView.msgSent(response);
+            }
+
+            @Override
+            public void error(Throwable error) {
+                verifyView.showErrorMessage(Util.get().getMessage((VolleyError) error));
+            }
+        });
+    }
+
+    @Override
+    public void checkVerificationCode(String url, String body) {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getUser().getUserId()));
+        repository.post(url, Object.class, body, header, new ResponseListener<Object>() {
+            @Override
+            public void success(Object response) {
+                verifyView.userVerified();
+            }
+
+            @Override
+            public void error(Throwable error) {
+                verifyView.userVerificationFailed(Util.get().getMessage((VolleyError) error));
             }
         });
     }

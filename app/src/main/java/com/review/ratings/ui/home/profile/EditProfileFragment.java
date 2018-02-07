@@ -96,7 +96,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         if (user.getPhoneNumber() != null) {
             etEfPhoneNumber.setText(user.getPhoneNumber());
         }
-        if (user.getActive() == 1) {
+        if (user.getActive()) {
             chkEfActive.setChecked(true);
         } else {
             chkEfActive.setChecked(false);
@@ -204,7 +204,7 @@ public class EditProfileFragment extends Fragment implements ProfileContract.Edi
         }
         if (user != null) {
             user.setFullName(etEfFullName.getText().toString());
-            user.setActive(chkEfActive.isChecked() ? 1 : 0);
+            user.setActive(chkEfActive.isChecked());
             user.setOrgName(etEfOrgName.getText().toString());
             user.setAddress(etEfAddress.getText().toString());
             user.setDesignation(etEfDesignation.getText().toString());
