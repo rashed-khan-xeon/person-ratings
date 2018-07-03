@@ -36,7 +36,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.setUserSelectedCategoryToView(null);
+                view.showErrorMessage(error.getMessage());
             }
         });
     }

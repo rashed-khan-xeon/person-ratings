@@ -386,7 +386,6 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     public void setUserSelectedCategoryToView(List<RatingsCategory> ratingsCategories) {
         if (ratingsCategories == null) {
             btnJustificationSubmit.setVisibility(View.GONE);
-            return;
         }
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
         data.put("0", "--Choose category--");
