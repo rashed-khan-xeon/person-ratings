@@ -5,11 +5,12 @@
     android:orientation="vertical"
     tools:context="com.review.ratings.ui.home.history.RatingsHistoryFragment">
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/lvRatingsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".9"
+        android:layout_gravity="center"
         android:divider="@android:color/transparent"
         android:dividerHeight="1dp"
         android:padding="5dp" />

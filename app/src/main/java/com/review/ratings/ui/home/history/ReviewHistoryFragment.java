@@ -4,6 +4,9 @@ package com.review.ratings.ui.home.history;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.rashedkhan.ratings.R;
@@ -21,14 +25,17 @@ import com.review.ratings.data.model.RatingsPref;
 import com.review.ratings.data.model.UserReview;
 import com.review.ratings.util.Util;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ReviewHistoryFragment extends Fragment implements HistoryContract.ReviewView {
-    private ListView lvUserReviewList;
+    private RecyclerView lvUserReviewList;
     private View reviewContent;
     private HistoryContract.ReviewsPresenter presenter;
     private Button btnPrev, btnNext;
@@ -62,18 +69,16 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
                 presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId(), start, top));
             }
         }
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                start += top + 1;
+        btnNext.setOnClickListener(view -> {
+            start += top + 1;
+            if (pref != null) {
                 presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId(), start, top));
             }
         });
-        btnPrev.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (start != 0)
-                    start -= top + 1;
+        btnPrev.setOnClickListener(view -> {
+            if (start != 0)
+                start -= top + 1;
+            if (pref != null) {
                 presenter.getUserReviewList(ApiUrl.getInstance().getUserReviewList(pref.getUser().getUserId(), start, top));
             }
         });
@@ -106,11 +111,14 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
         }
 
         UserReviewAdapter adapter = new UserReviewAdapter(userReviews, getActivity());
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+        lvUserReviewList.setLayoutManager(lm);
+        lvUserReviewList.setItemAnimator(new DefaultItemAnimator());
         lvUserReviewList.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
 
-    private class UserReviewAdapter extends BaseAdapter {
+    private class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.BaseHolder> {
         List<UserReview> userReviews;
         Context context;
 
@@ -119,14 +127,42 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
             this.context = context;
         }
 
-        @Override
-        public int getCount() {
-            return userReviews.size();
+
+        public UserReview getItem(int i) {
+            return userReviews.get(i);
         }
 
         @Override
-        public UserReview getItem(int i) {
-            return userReviews.get(i);
+        public BaseHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == 1) {
+                return new EmptyHolder(LayoutInflater.from(context).inflate(R.layout.rating_empty_layout, parent, false));
+            } else
+                return new Holder(LayoutInflater.from(context).inflate(R.layout.reivew_list_item, parent, false));
+        }
+
+        @Override
+        public void onBindViewHolder(BaseHolder holder, int position) {
+            if (holder instanceof Holder) {
+                Holder row = (Holder) holder;
+                if (getItem(position).getComments() != null) {
+                    row.tvReviewTitle.setText("Comments: ");
+                    row.tvReviewTitle.append(getItem(position).getComments());
+                }
+                if (getItem(position).getRatingsCategory() != null) {
+                    if (getItem(position).getRatingsCategory().getCategory() != null) {
+                        row.tvReviewCat.setText(getItem(position).getRatingsCategory().getCategory().getName());
+                    }
+                }
+                if (getItem(position).getReviewDate() != null) {
+                 //   Calendar calendar = Calendar.getInstance();
+                    SimpleDateFormat formatter = new SimpleDateFormat("dd - MMMM - yyyy", Locale.US);
+                    String s = formatter.format(getItem(position).getReviewDate());
+//                    calendar.setTime(getItem(position).getReviewDate());
+//                    String ampm = calendar.get(Calendar.AM_PM) == Calendar.AM ? " AM" : " PM";
+//                    String txt = calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ampm;
+                    row.tvReviewDate.setText(s);
+                }
+            }
         }
 
         @Override
@@ -135,33 +171,45 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
         }
 
         @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            View row;
-            if (view == null) {
-                row = LayoutInflater.from(context).inflate(R.layout.reivew_list_item, null);
-            } else {
-                row = view;
+        public int getItemCount() {
+            if (userReviews == null || userReviews.size() == 0) {
+                return 1;
             }
-            TextView tvReviewTitle = row.findViewById(R.id.tvReviewTitle);
-            TextView tvReviewCat = row.findViewById(R.id.tvReviewCat);
-            TextView tvReviewDate = row.findViewById(R.id.tvReviewDate);
+            return userReviews.size();
+        }
 
-            if (getItem(i).getComments() != null) {
-                tvReviewTitle.setText(getItem(i).getComments());
+        @Override
+        public int getItemViewType(int position) {
+            if (getItemCount() == 1) {
+                return 1;
+            } else
+                return 2;
+        }
+
+        public class Holder extends BaseHolder {
+
+            TextView tvReviewTitle, tvReviewCat, tvReviewDate;
+
+            public Holder(View itemView) {
+                super(itemView);
+                tvReviewTitle = itemView.findViewById(R.id.tvReviewTitle);
+                tvReviewCat = itemView.findViewById(R.id.tvReviewCat);
+                tvReviewDate = itemView.findViewById(R.id.tvReviewDate);
             }
-            if (getItem(i).getRatingsCategory() != null) {
-                if (getItem(i).getRatingsCategory().getCategory() != null) {
-                    tvReviewCat.setText(getItem(i).getRatingsCategory().getCategory().getName());
-                }
+        }
+
+        public class BaseHolder extends RecyclerView.ViewHolder {
+
+            public BaseHolder(View itemView) {
+                super(itemView);
             }
-            if (getItem(i).getReviewDate() != null) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(getItem(i).getReviewDate());
-                String ampm = calendar.get(Calendar.AM_PM) == Calendar.AM ? " AM" : " PM";
-                String txt = calendar.get(Calendar.DAY_OF_MONTH) + " - " + calendar.get(Calendar.MONTH) + 1 + " - " + calendar.get(Calendar.YEAR) + "  " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ampm;
-                tvReviewDate.setText(txt);
+        }
+
+        public class EmptyHolder extends BaseHolder {
+
+            public EmptyHolder(View itemView) {
+                super(itemView);
             }
-            return row;
         }
     }
 }

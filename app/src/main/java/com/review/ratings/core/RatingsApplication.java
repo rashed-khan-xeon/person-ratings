@@ -22,6 +22,7 @@ public class RatingsApplication extends Application {
     private static final String COOKIE_KEY = "Cookie";
     private static final String SESSION_COOKIE = "sessionid";
     private SharedPreferences _preferences;
+    private String countryCode = null;
 
     public static RatingsApplication getInstant() {
         return application;
@@ -114,5 +115,20 @@ public class RatingsApplication extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
+    }
+
+    public String getCountryCode() {
+        return countryCode;
+    }
+
+    public boolean isOTPAvailable() {
+        if (countryCode != null && countryCode.equals("BD")) {
+            return true;
+        }
+        return false;
+    }
+
+    public void setCountryCode(String countryCode) {
+        this.countryCode = countryCode;
     }
 }

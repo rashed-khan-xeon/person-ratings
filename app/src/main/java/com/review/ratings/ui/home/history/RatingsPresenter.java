@@ -8,6 +8,7 @@ import com.review.ratings.data.model.UserRatings;
 import com.review.ratings.data.repository.IHttpRepository;
 import com.review.ratings.util.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class RatingsPresenter implements HistoryContract.RatingsPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
+                view.setUserRatingsView(new ArrayList<>());
             }
         });
     }
