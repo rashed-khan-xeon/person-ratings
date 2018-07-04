@@ -17,7 +17,8 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-    private final String BASE_URL = "http://192.168.1.118/ratings/";
+//    private final String BASE_URL = "http://192.168.1.106/ratings/";
+    private final String BASE_URL = "http://ratings.rashedkhan.com/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -109,6 +110,10 @@ public class ApiUrl {
 
     public String getUserImageUrl(String image) {
         return BASE_URL + "image/" + image;
+    }
+
+    public String getRatingsShareLink() {
+        return "https://play.google.com/store/apps/details?id=com.rashedkhan.ratings";
     }
 
 }

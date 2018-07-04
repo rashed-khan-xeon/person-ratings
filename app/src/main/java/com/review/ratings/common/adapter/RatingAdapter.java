@@ -39,6 +39,16 @@ public class RatingAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return getCount();
+    }
+
+    @Override
     public long getItemId(int i) {
         return i;
     }
@@ -55,9 +65,15 @@ public class RatingAdapter extends BaseAdapter {
         TextView tvUserCatStatus = vw.findViewById(R.id.tvUserCatStatus);
         TextView tvRatingsCount = vw.findViewById(R.id.tvRatingsCount);
         RatingBar itemRatings = vw.findViewById(R.id.itemRatings);
-        tvRatItemTitle.setText(ratingSummary.get(i).getCategory());
+        tvRatItemTitle.setText(ratingSummary.get(i).getCategory() == null ? "" : ratingSummary.get(i).getCategory());
         itemRatings.setRating(ratingSummary.get(i).getAvgRatings());
-        tvRatingsCount.setText(String.valueOf(ratingSummary.get(i).getAvgRatings()));
+        tvRatingsCount.setText(String.format("Average Ratings: %s", String.valueOf(ratingSummary.get(i).getAvgRatings())));
+        if (ratingSummary.get(i).getCount() > 0) {
+            tvRatingsCount.append("\t\t\tTotal: " + ratingSummary.get(i).getCount());
+        }else{
+            itemRatings.setVisibility(View.INVISIBLE);
+            tvRatingsCount.setText(R.string.nobody_rated);
+        }
         tvUserCatStatus.setText(Util.get().generateUserStatusFromRatings(ratingSummary.get(i).getAvgRatings()));
         switch ((int) ratingSummary.get(i).getAvgRatings()) {
             case 1:

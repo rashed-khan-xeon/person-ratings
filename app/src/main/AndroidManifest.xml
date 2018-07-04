@@ -50,7 +50,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.review.ratings.ui.home.auth.VerificationActivity"></activity>
+        <activity android:name="com.review.ratings.ui.home.auth.VerificationActivity"/>
     </application>
 
 </manifest>

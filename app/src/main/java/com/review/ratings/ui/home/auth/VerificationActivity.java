@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.common.api.Api;
@@ -32,8 +33,9 @@ import java.util.Map;
 public class VerificationActivity extends BaseActivity implements AuthContract.VerifyView {
     private Button btnSendCode, btnVerify;
     private EditText etUserVerifiedCode;
-    private TextView tvUserPhoneNumber;
-    private LinearLayout llVerifiedCode, llVerifyLayout;
+    private TextView tvUserPhoneNumber, tvResendCode;
+    private LinearLayout llVerifyLayout;
+    private RelativeLayout llVerifiedCode;
     private AuthContract.VerifyPresenter presenter;
 
     @Override
@@ -56,15 +58,24 @@ public class VerificationActivity extends BaseActivity implements AuthContract.V
         llVerifyLayout = findViewById(R.id.llVerifyLayout);
         llVerifiedCode = findViewById(R.id.llVerifiedCode);
         etUserVerifiedCode = findViewById(R.id.etUserVerifiedCode);
+        tvResendCode = findViewById(R.id.tvResendCode);
         tvUserPhoneNumber = findViewById(R.id.tvUserPhoneNumber);
         btnSendCode = findViewById(R.id.btnSendCode);
         btnVerify = findViewById(R.id.btnVerify);
-        btnSendCode.setOnClickListener(v -> presenter.sendVerificationCode(ApiUrl.getInstance().getSendCodeUrl(RatingsApplication.getInstant().getUser().getUserId())));
+        btnSendCode.setOnClickListener(v -> {
+            Util.get().showProgress(VerificationActivity.this, true, "Processing...");
+            presenter.sendVerificationCode(ApiUrl.getInstance().getSendCodeUrl(RatingsApplication.getInstant().getUser().getUserId()));
+        });
+        tvResendCode.setOnClickListener(v -> {
+            Util.get().showProgress(VerificationActivity.this, true, "Processing...");
+            presenter.sendVerificationCode(ApiUrl.getInstance().getSendCodeUrl(RatingsApplication.getInstant().getUser().getUserId()));
+        });
         btnVerify.setOnClickListener(v -> {
             if (TextUtils.isEmpty(etUserVerifiedCode.getText())) {
                 Util.get().showToastMsg(this, "Verification code is required !");
                 return;
             }
+            Util.get().showProgress(VerificationActivity.this, true, "Processing...");
             JsonObject jo = new JsonObject();
             jo.addProperty("userId", String.valueOf(RatingsApplication.getInstant().getUser().getUserId()));
             jo.addProperty("code", etUserVerifiedCode.getText().toString());
@@ -74,6 +85,7 @@ public class VerificationActivity extends BaseActivity implements AuthContract.V
 
     @Override
     public void userVerified() {
+        Util.get().showProgress(VerificationActivity.this, false, null);
         Util.get().showToastMsg(this, "Verified !");
         User user = RatingsApplication.getInstant().getUser();
         user.setHasVerified(1);
@@ -87,6 +99,7 @@ public class VerificationActivity extends BaseActivity implements AuthContract.V
     @Override
     public void userVerificationFailed(String msg) {
         Util.get().showToastMsg(this, msg);
+        Util.get().showProgress(VerificationActivity.this, false, null);
     }
 
     @Override
@@ -96,16 +109,18 @@ public class VerificationActivity extends BaseActivity implements AuthContract.V
 
     @Override
     public void showSuccessMessage(String msg) {
-
+        Util.get().showProgress(VerificationActivity.this, false, null);
     }
 
     @Override
     public void showErrorMessage(String msg) {
         Util.get().showToastMsg(this, msg);
+        Util.get().showProgress(VerificationActivity.this, false, null);
     }
 
     @Override
     public void msgSent(Object obj) {
+        Util.get().showProgress(VerificationActivity.this, false, null);
         Util.get().showToastMsg(this, "Please check your inbox !");
         llVerifyLayout.setVisibility(View.GONE);
         llVerifiedCode.setVisibility(View.VISIBLE);

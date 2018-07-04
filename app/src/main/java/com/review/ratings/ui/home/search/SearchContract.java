@@ -22,6 +22,8 @@ public interface SearchContract {
 
         void setUserAvgRatingsToView(List<RatingSummary> avgRating);
 
+        void noUserRatings(String msg);
+
         void noUserFound(String msg);
     }
 }

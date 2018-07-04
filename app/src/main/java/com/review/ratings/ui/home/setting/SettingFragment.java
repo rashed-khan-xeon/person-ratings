@@ -15,8 +15,6 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.ads.AdRequest;
@@ -36,8 +34,6 @@ import com.review.ratings.data.model.UserSetting;
 import com.review.ratings.ui.home.auth.LoginActivity;
 import com.review.ratings.ui.home.search.SearchFragment;
 import com.review.ratings.util.Util;
-
-import org.w3c.dom.Text;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -78,8 +74,8 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         initViewComponents();
         setPrivacyToView();
         mInterstitialAd = new InterstitialAd(getActivity());
-//        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
-        mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
+        // mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
         return settingView;
     }
@@ -202,7 +198,7 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
                 lvCategories.setExpanded(true);
                 User user = RatingsApplication.getInstant().getRatingsPref().getUser();
                 adapter.setItemCheckedListener(position -> activeRatingsCat(categories.get(position), user.getUserId()));
-                adapter.setItemCheckedRemovedListener(position -> inActiveRatingsCat(categories.get(position), user.getUserId()));
+                adapter.setItemUnCheckedListener(position -> inActiveRatingsCat(categories.get(position), user.getUserId()));
             }
         }
     }
@@ -226,7 +222,7 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             lvCategories.setAdapter(newAdapter);
             lvCategories.setExpanded(true);
             newAdapter.setItemCheckedListener(position -> activeRatingsCat(category, user.getUserId()));
-            newAdapter.setItemCheckedRemovedListener(position -> inActiveRatingsCat(category, user.getUserId()));
+            newAdapter.setItemUnCheckedListener(position -> inActiveRatingsCat(category, user.getUserId()));
         }
         activeRatingsCat(category, category.getUserId());
     }
@@ -290,7 +286,7 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             this.checkClickListener = listener;
         }
 
-        public void setItemCheckedRemovedListener(SearchFragment.ClickListener listener) {
+        public void setItemUnCheckedListener(SearchFragment.ClickListener listener) {
             this.unCheckClickListener = listener;
         }
 
@@ -314,18 +310,21 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             if (ratingsCategories != null) {
                 for (RatingsCategory rtc : ratingsCategories) {
                     if (rtc.getCatId() == categories.get(i).getCatId()) {
-                        chkUserCategory.setChecked(true);
-                    }
-                }
-            } else {
-                if (categories != null) {
-                    for (Category rtc : categories) {
-                        if (!chkUserCategory.isChecked())
+                        if (rtc.getActive() == 1)
                             chkUserCategory.setChecked(true);
-
                     }
                 }
             }
+//            else {
+//                if (categories != null) {
+//                    for (Category rtc : categories) {
+//                        if (!rtc.getIsDefault())
+//                            if (!chkUserCategory.isChecked())
+//                                chkUserCategory.setChecked(true);
+//
+//                    }
+//                }
+//            }
             if (chkUserCategory != null)
                 chkUserCategory.setOnClickListener(view1 -> {
                     if (chkUserCategory.isChecked()) {

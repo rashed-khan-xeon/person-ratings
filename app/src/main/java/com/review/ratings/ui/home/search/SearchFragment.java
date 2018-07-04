@@ -4,6 +4,7 @@ package com.review.ratings.ui.home.search;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -38,10 +40,12 @@ import com.review.ratings.ui.home.justify.JustifyFragment;
 import com.review.ratings.ui.home.profile.ProfileContract;
 import com.review.ratings.ui.home.profile.ProfileFragment;
 import com.review.ratings.ui.home.profile.ProfilePresenter;
+import com.review.ratings.ui.home.setting.SettingFragment;
 import com.review.ratings.util.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -58,13 +62,21 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     private ExpandedListView lvOverallRatings;
     private PersonListAdapter adapter;
     private List<User> users;
-    private CardView cvOverallRate;
+    private LinearLayout cvOverallRate;
+    private TextView tvNoRatingsMsg;
+    private TextView tvConfigProfile;
 
     View homeView;
     private Button btnSearch;
 
     public SearchFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -97,6 +109,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         cvOverallRate = homeView.findViewById(R.id.cvOverallRate);
         btnSearch = homeView.findViewById(R.id.btnSearch);
         etUserNameOrEmail = homeView.findViewById(R.id.etUserNameOrEmail);
+        tvNoRatingsMsg = homeView.findViewById(R.id.tvNoRatingsMsg);
+        tvConfigProfile = homeView.findViewById(R.id.tvConfigProfile);
         btnSearch.setOnClickListener(view -> {
             if (!getUrl().isEmpty()) {
                 hideKeyboard();
@@ -107,6 +121,8 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         if (RatingsApplication.getInstant().getUser() != null)
             presenter.getUserAvgRatingByCategory(ApiUrl.getInstance().getAvgRatingUrl(RatingsApplication.getInstant().getUser().getUserId()));
         adView.loadAd(new AdRequest.Builder().build());
+
+        tvConfigProfile.setOnClickListener(v -> transfer.transferFragment(new SettingFragment()));
 
     }
 
@@ -130,7 +146,12 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
 
     @Override
     public void setUserListToView(List<User> userList) {
-        users = userList;
+        users = new ArrayList<>();
+        for (User user : userList) {
+            if (user.getActive() && user.hasVerified()) {
+                users.add(user);
+            }
+        }
         Util.get().showProgress(getActivity(), false, null);
         if (users != null) {
             Dialog dialog = new Dialog(getActivity());
@@ -159,14 +180,29 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+      //  Dialog dialog = new Dialog(getActivity());
+      //  View view = LayoutInflater.from(getActivity()).inflate(R.layout.opening_dialog, null);
+       // dialog.setContentView(view);
+       // dialog.show();
+    }
+
+    @Override
     public void setUserAvgRatingsToView(List<RatingSummary> ratingsCategories) {
-        if (ratingsCategories != null)
+        if (ratingsCategories != null) {
             if (ratingsCategories.size() > 0) {
                 cvOverallRate.setVisibility(View.VISIBLE);
                 RatingAdapter adapter = new RatingAdapter(getContext(), ratingsCategories);
                 lvOverallRatings.setAdapter(adapter);
                 lvOverallRatings.setExpanded(true);
             }
+        }
+    }
+
+    @Override
+    public void noUserRatings(String msg) {
+        tvNoRatingsMsg.setVisibility(View.VISIBLE);
     }
 
     @Override

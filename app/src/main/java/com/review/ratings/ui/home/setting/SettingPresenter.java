@@ -98,7 +98,7 @@ public class SettingPresenter implements SettingContract.SettingPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
+                //view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }
@@ -136,7 +136,7 @@ public class SettingPresenter implements SettingContract.SettingPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
+            //    view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }

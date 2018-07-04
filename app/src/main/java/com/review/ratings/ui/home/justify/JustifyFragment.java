@@ -273,6 +273,10 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
             }
         });
         btnJustificationSubmit.setOnClickListener(view -> {
+            if (selectedRatingsCatId == 0 && justifies.size() > 0) {
+                submit();
+                return;
+            }
             Justify justify = new Justify();
             if (selectedRatingsCatId == 0) {
                 Util.get().showToastMsg(getActivity(), "Please select a category !");
@@ -344,7 +348,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                 adapter.notifyDataSetChanged();
             });
             AlertDialog.Builder ab = new AlertDialog.Builder(context);
-            ab.setMessage("Do you want add another category ?");
+            ab.setMessage("Do you want to rate another category ?");
             ab.setPositiveButton("Yes", (dialogInterface, i) -> {
                 rtRatings.setRating(0);
                 etComments.setText("");
@@ -352,6 +356,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
             }).setNegativeButton("No, Continue", (dialogInterface, i) -> {
                 submit();
             }).create().show();
+
 
         });
     }

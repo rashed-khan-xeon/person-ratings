@@ -58,7 +58,7 @@ public class SearchPresenter implements SearchContract.SearchPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
+                view.noUserRatings(Util.get().getMessage((VolleyError) error));
             }
         });
     }
