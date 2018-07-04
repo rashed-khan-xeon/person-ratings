@@ -32,7 +32,6 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.common.api.Api;
 import com.google.gson.JsonObject;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseActivity;
