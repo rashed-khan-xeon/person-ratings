@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.common.api.Api;
 import com.google.gson.JsonObject;
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseActivity;
