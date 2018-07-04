@@ -9,7 +9,10 @@ public class Category {
     private String name;
     private int userTypeId;
     private UserType userType;
+    private int userId;
+    private User user;
     private int active;
+    private int isDefault;
 
     public UserType getUserType() {
         return userType;
@@ -52,5 +55,29 @@ public class Category {
 
     public void setActive(int active) {
         this.active = active;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public boolean getIsDefault() {
+        return isDefault==1;
+    }
+
+    public void setIsDefault(int isDefault) {
+        this.isDefault = isDefault;
     }
 }

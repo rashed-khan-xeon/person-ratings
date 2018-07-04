@@ -12,8 +12,18 @@ import android.widget.TextView;
 
 import com.rashedkhan.ratings.R;
 import com.review.ratings.common.BaseActivity;
+import com.review.ratings.config.ApiUrl;
 import com.review.ratings.core.RatingsApplication;
+import com.review.ratings.core.ResponseListener;
+import com.review.ratings.data.implementation.HttpRepository;
+import com.review.ratings.data.model.RatingsPref;
+import com.review.ratings.data.model.User;
+import com.review.ratings.data.repository.IHttpRepository;
 import com.review.ratings.ui.home.auth.LoginActivity;
+import com.review.ratings.ui.home.auth.VerificationActivity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class SplashActivity extends BaseActivity {
     private TextView tvWelcomeTxt;
@@ -71,10 +81,14 @@ public class SplashActivity extends BaseActivity {
 
             @Override
             public void onAnimationEnd(Animation animation) {
-
                 if (RatingsApplication.getInstant().isLogin()) {
-                    startActivity(new Intent(SplashActivity.this, HomeActivity.class));
-                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+                    if (!RatingsApplication.getInstant().getUser().hasVerified()) {
+                        startActivity(new Intent(SplashActivity.this, VerificationActivity.class));
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    } else {
+                        startActivity(new Intent(SplashActivity.this, HomeActivity.class));
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    }
                 } else {
                     startActivity(new Intent(SplashActivity.this, LoginActivity.class));
                 }
@@ -85,5 +99,26 @@ public class SplashActivity extends BaseActivity {
 
             }
         });
+        IHttpRepository repository = new HttpRepository(this);
+        if (RatingsApplication.getInstant().getUser() != null) {
+            String url = ApiUrl.getInstance().getUserDetailsUrl(RatingsApplication.getInstant().getUser().getUserId());
+            Map<String, String> header = new HashMap<>();
+            header.put("Content-Type", "application/json");
+            header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+            repository.get(url, User.class, header, new ResponseListener<User>() {
+                @Override
+                public void success(User response) {
+                    RatingsPref pref = RatingsApplication.getInstant().getRatingsPref();
+                    pref.setUser(response);
+                    RatingsApplication.getInstant().setPreference(pref);
+                }
+
+                @Override
+                public void error(Throwable error) {
+                    RatingsApplication.getInstant().removePreference();
+                }
+            });
+
+        }
     }
 }

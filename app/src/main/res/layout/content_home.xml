@@ -9,6 +9,7 @@
     tools:context="com.review.ratings.ui.home.HomeActivity"
     tools:showIn="@layout/app_bar_home">
 
+
     <FrameLayout
         android:id="@+id/homeContainer"
         android:layout_width="match_parent"

@@ -17,7 +17,10 @@ public class User {
     private String designation;
     private String orgName;
     private String image;
+    private int hasVerified;
+
     private int active;
+
     public User() {
     }
 
@@ -109,12 +112,16 @@ public class User {
         this.orgName = orgName;
     }
 
-    public int getActive() {
-        return active;
+    public boolean getActive() {
+        return active == 1;
     }
 
-    public void setActive(int active) {
-        this.active = active;
+    public void setActive(boolean act) {
+        if (act) {
+            active = 1;
+        } else {
+            active = 0;
+        }
     }
 
     public String getImage() {
@@ -142,5 +149,13 @@ public class User {
                 ", image='" + image + '\'' +
                 ", active=" + active +
                 '}';
+    }
+
+    public boolean hasVerified() {
+        return hasVerified == 1;
+    }
+
+    public void setHasVerified(int hasVerified) {
+        this.hasVerified = hasVerified;
     }
 }

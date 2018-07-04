@@ -27,5 +27,19 @@ public interface AuthContract {
         void setUserTypesToView(List<UserType> userTypes);
     }
 
+    interface VerifyView extends BaseView {
+        void msgSent(Object obj);
+
+        void userVerified();
+
+        void userVerificationFailed(String msg);
+    }
+
+    interface VerifyPresenter {
+        void sendVerificationCode(String url);
+
+        void checkVerificationCode(String url, String body);
+    }
+
 
 }

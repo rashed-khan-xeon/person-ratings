@@ -44,7 +44,7 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         reviewContent = inflater.inflate(R.layout.fragment_review_history, container, false);
-        Util.get().showProgress(getActivity(),true,"Processing...");
+        Util.get().showProgress(getActivity(), true, "Processing...");
         presenter = new ReviewPresenter(this, new HttpRepository(getActivity()));
         initViewComponents();
         return reviewContent;
@@ -82,19 +82,19 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
 
     @Override
     public void showSuccessMessage(String msg) {
-        Util.get().showProgress(getActivity(),false,null);
+        Util.get().showProgress(getActivity(), false, null);
         Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void showErrorMessage(String msg) {
-        Util.get().showProgress(getActivity(),false,null);
+        Util.get().showProgress(getActivity(), false, null);
         Util.get().showToastMsg(getActivity(), msg);
     }
 
     @Override
     public void setUserReviewListToView(List<UserReview> userReviews) {
-        Util.get().showProgress(getActivity(),false,null);
+        Util.get().showProgress(getActivity(), false, null);
         if (userReviews.size() == top) {
             llRevPaging.setVisibility(View.VISIBLE);
             return;
@@ -143,10 +143,16 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
                 row = view;
             }
             TextView tvReviewTitle = row.findViewById(R.id.tvReviewTitle);
+            TextView tvReviewCat = row.findViewById(R.id.tvReviewCat);
             TextView tvReviewDate = row.findViewById(R.id.tvReviewDate);
 
             if (getItem(i).getComments() != null) {
                 tvReviewTitle.setText(getItem(i).getComments());
+            }
+            if (getItem(i).getRatingsCategory() != null) {
+                if (getItem(i).getRatingsCategory().getCategory() != null) {
+                    tvReviewCat.setText(getItem(i).getRatingsCategory().getCategory().getName());
+                }
             }
             if (getItem(i).getReviewDate() != null) {
                 Calendar calendar = Calendar.getInstance();

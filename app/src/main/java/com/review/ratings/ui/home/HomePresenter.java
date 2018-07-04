@@ -1,39 +1,37 @@
-package com.review.ratings.ui.home.history;
+package com.review.ratings.ui.home;
 
 import com.android.volley.VolleyError;
 import com.review.ratings.core.RatingsApplication;
 import com.review.ratings.core.ResponseListener;
 import com.review.ratings.data.implementation.HttpRepository;
-import com.review.ratings.data.model.UserRatings;
 import com.review.ratings.data.repository.IHttpRepository;
 import com.review.ratings.util.Util;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * Created by arifk on 12.1.18.
+ * Created by arifk on 25.1.18.
  */
 
-public class RatingsPresenter implements HistoryContract.RatingsPresenter {
-    private HistoryContract.RatingsView view;
+public class HomePresenter implements HomeContract.Presenter {
+    private HomeContract.HomeView view;
     private IHttpRepository repository;
 
-    public RatingsPresenter(HistoryContract.RatingsView view, HttpRepository repository) {
+    public HomePresenter(HomeContract.HomeView view, HttpRepository repository) {
         this.view = view;
         this.repository = repository;
     }
 
     @Override
-    public void getUserRatingsList(String url) {
-        Map<String, String> header = new HashMap<>();
+    public void changePassword(String url, String body) {    Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
-        repository.getAll(url, UserRatings[].class, header, new ResponseListener<List<UserRatings>>() {
+
+        repository.post(url, Object.class, body, header, new ResponseListener<Object>() {
             @Override
-            public void success(List<UserRatings> response) {
-                view.setUserRatingsView(response);
+            public void success(Object response) {
+                view.passwordChanged();
             }
 
             @Override

@@ -154,6 +154,7 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
 
     @Override
     public void showErrorMessage(String msg) {
+        Util.get().showToastMsg(this, msg);
         Util.get().showProgress(this, false, null);
     }
 
@@ -177,8 +178,13 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         RatingsPref pref = new RatingsPref();
         pref.setUser(user);
         RatingsApplication.getInstant().setPreference(pref);
-        startActivity(new Intent(this, HomeActivity.class));
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        if (!user.hasVerified()) {
+            startActivity(new Intent(this, VerificationActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        } else {
+            startActivity(new Intent(this, HomeActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
     }
 
     @Override

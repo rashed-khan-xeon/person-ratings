@@ -1,10 +1,12 @@
 package com.review.ratings.ui.home.justify;
 
+import com.android.volley.VolleyError;
 import com.review.ratings.core.RatingsApplication;
 import com.review.ratings.core.ResponseListener;
 import com.review.ratings.data.implementation.HttpRepository;
 import com.review.ratings.data.model.RatingsCategory;
 import com.review.ratings.data.repository.IHttpRepository;
+import com.review.ratings.util.Util;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +38,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(error.getMessage());
+             //   view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }
@@ -54,7 +56,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(error.getMessage());
+                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }
@@ -72,7 +74,7 @@ public class JustifyPresenter implements JustifyContract.JustifyPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.showErrorMessage(error.getMessage());
+                view.showErrorMessage(Util.get().getMessage((VolleyError) error));
             }
         });
     }

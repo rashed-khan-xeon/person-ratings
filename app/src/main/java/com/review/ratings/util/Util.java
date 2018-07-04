@@ -9,6 +9,8 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -36,7 +38,7 @@ public class Util {
             progressDialog.setIndeterminate(true);
             progressDialog.setMessage(msg);
             progressDialog.setProgressStyle(android.R.style.Widget_DeviceDefault_Light_ProgressBar_Horizontal);
-          //  progressDialog.create();
+            //  progressDialog.create();
             progressDialog.show();
         } else {
             if (progressDialog != null) {
@@ -108,4 +110,19 @@ public class Util {
 
     }
 
+    public String getMessage(VolleyError error) {
+        if (error == null) {
+            return "No Response!";
+        }
+        if (error.getMessage() == null) {
+            return "Failed";
+        }
+        if (error.networkResponse == null) {
+            return "Connection error !";
+        }
+        if (error.networkResponse.data == null) {
+            return "Connection error !";
+        }
+        return new String(error.networkResponse.data);
+    }
 }

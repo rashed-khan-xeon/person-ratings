@@ -7,8 +7,8 @@ android {
         applicationId "com.rashedkhan.ratings"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 3
-        versionName "1.0"
+        versionCode 11
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     compileOptions {
@@ -26,6 +26,7 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.google.firebase:firebase-appindexing:11.8.0'
     compile 'com.android.support:support-v4:27.0.2'
     compile 'com.android.support:appcompat-v7:27.0.2'
     compile 'com.android.support:support-compat:27.0.2'
@@ -42,3 +43,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 }
+
+
+
+apply plugin: 'com.google.gms.google-services'
