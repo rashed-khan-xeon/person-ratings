@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.review.ratings.ui.home.SplashActivity">
+    tools:context="com.rashedkhan.ratings.ui.home.SplashActivity">
 
     <TextView
         android:id="@+id/tvWelcomeTxt"

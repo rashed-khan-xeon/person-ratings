@@ -187,6 +187,7 @@
             android:layout_marginTop="5dp"
             android:elevation="5dp"
             android:minHeight="40dp"
+            android:visibility="gone"
             app:cardCornerRadius="2dp"
             app:cardUseCompatPadding="true">
 
@@ -208,7 +209,7 @@
                     android:textColor="@color/white"
                     android:textSize="14sp" />
 
-                <com.review.ratings.common.adapter.ExpandedListView
+                <com.rashedkhan.ratings.common.adapter.ExpandedListView
                     android:id="@+id/lvOverallRatings"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

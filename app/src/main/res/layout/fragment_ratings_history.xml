@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.review.ratings.ui.home.history.RatingsHistoryFragment">
+    tools:context="com.rashedkhan.ratings.ui.home.history.RatingsHistoryFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lvRatingsList"

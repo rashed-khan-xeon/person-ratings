@@ -275,7 +275,7 @@
             </android.support.v7.widget.CardView>
 
 
-            <com.review.ratings.common.adapter.ExpandedListView
+            <com.rashedkhan.ratings.common.adapter.ExpandedListView
                 android:id="@+id/lvSelectedRatRev"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

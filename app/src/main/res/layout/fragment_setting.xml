@@ -54,7 +54,7 @@
                         android:text="* Check category to active"
                         android:textColor="@color/green_800" />
 
-                    <com.review.ratings.common.adapter.ExpandedListView
+                    <com.rashedkhan.ratings.common.adapter.ExpandedListView
                         android:id="@+id/lvCategories"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
