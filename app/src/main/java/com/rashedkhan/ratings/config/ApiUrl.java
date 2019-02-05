@@ -17,8 +17,8 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-//    private final String BASE_URL = "http://192.168.0.12/ratings/";
-    private final String BASE_URL = "http://ratings.rashedkhan.com/";
+    private final String BASE_URL = "http://192.168.0.12/ratings/";
+//    private final String BASE_URL = "http://ratings.rashedkhan.com/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -92,6 +92,10 @@ public class ApiUrl {
         return BASE_URL + "api/v1/categories-by-user-id?userId=" + userId;
     }
 
+    public String getDefaultCategoriesByUrl(int userId) {
+        return BASE_URL + "api/v1/default-categories?userId=" + userId;
+    }
+
     public String getAddRatingsCategoriesUrl() {
         return BASE_URL + "api/v1/ratings-category-add-or-update";
     }
@@ -102,6 +106,18 @@ public class ApiUrl {
 
     public String getUserRatingsList(int userId, int skip, int top) {
         return BASE_URL + "api/v1/user-all-ratings?userId=" + userId + "&skip=" + skip + "&top=" + top;
+    }
+
+    public String createFeature() {
+        return BASE_URL + "api/v1/create-feature";
+    }
+
+    public String crateFeatureUser() {
+        return BASE_URL + "api/v1/create-feature-user";
+    }
+
+    public String getFeatureList(int userId) {
+        return BASE_URL + "api/v1/get-feature-list?userId=" + userId;
     }
 
     public String getUserImageUploadUrl() {

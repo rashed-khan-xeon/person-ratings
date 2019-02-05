@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.google.gson.JsonObject;
@@ -18,6 +20,7 @@ import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseActivity;
 import com.rashedkhan.ratings.common.adapter.SpinnerAdapter;
 import com.rashedkhan.ratings.config.ApiUrl;
+import com.rashedkhan.ratings.config.ConfigKeys;
 import com.rashedkhan.ratings.core.RatingsApplication;
 import com.rashedkhan.ratings.core.RtClients;
 import com.rashedkhan.ratings.data.implementation.HttpRepository;
@@ -37,6 +40,9 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
     private EditText etFullName, etEmail, etPhoneNumber, etPassword, etConPassword;
     private Spinner spnProfession;
     private Button btnSignUp;
+    private RadioGroup rgRole;
+    private RadioButton rbUser;
+    private RadioButton rbAdmin;
     private AuthContract.AuthPresenter presenter;
     private int userTypeId = 0;
 
@@ -57,12 +63,17 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
     private void signUp() {
         boolean isValid = validateInputData();
         if (isValid) {
+            int roleId = ConfigKeys.getInstant().USER;
+            if (rgRole.getCheckedRadioButtonId() == R.id.rbAdmin) {
+                roleId = ConfigKeys.getInstant().ADMIN;
+            }
             JsonObject user = new JsonObject();
             user.addProperty("fullName", etFullName.getText().toString());
             user.addProperty("phoneNumber", etPhoneNumber.getText().toString());
             user.addProperty("email", etEmail.getText().toString());
             user.addProperty("password", Util.get().md5(etPassword.getText().toString()));
             user.addProperty("userTypeId", String.valueOf(userTypeId));
+            user.addProperty("roleId", String.valueOf(roleId));
             String bodyData = RtClients.getInstance().getGson().toJson(user);
             presenter.doSignUp(ApiUrl.getInstance().getUserSignUpUrl(), bodyData);
             Util.get().showProgress(this, true, "Processing...");
@@ -131,6 +142,9 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         etPassword = findViewById(R.id.etPassword);
         etConPassword = findViewById(R.id.etConPassword);
         spnProfession = findViewById(R.id.spnProfession);
+        rgRole = findViewById(R.id.rgRole);
+        rbUser = findViewById(R.id.rbUser);
+        rbAdmin = findViewById(R.id.rbAdmin);
         btnSignUp = findViewById(R.id.btnSignUp);
         spnProfession.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -178,17 +192,20 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         RatingsPref pref = new RatingsPref();
         pref.setUser(user);
         RatingsApplication.getInstant().setPreference(pref);
-        if (!RatingsApplication.getInstant().isOTPAvailable()) {
-            startActivity(new Intent(this, HomeActivity.class));
-            return;
-        }
-        if (!user.hasVerified()) {
-            startActivity(new Intent(this, VerificationActivity.class));
-           overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        } else {
-            startActivity(new Intent(this, HomeActivity.class));
-            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
+//        if (!RatingsApplication.getInstant().isOTPAvailable()) {
+//            startActivity(new Intent(this, HomeActivity.class));
+//            return;
+//        }
+//        if (!user.hasVerified()) {
+//            startActivity(new Intent(this, VerificationActivity.class));
+//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        } else {
+//            startActivity(new Intent(this, HomeActivity.class));
+//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        }
+
+        startActivity(new Intent(this, HomeActivity.class));
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override

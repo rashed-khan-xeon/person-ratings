@@ -37,6 +37,8 @@ import com.rashedkhan.ratings.core.RtClients;
 import com.rashedkhan.ratings.data.implementation.HttpRepository;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.ui.home.auth.LoginActivity;
+import com.rashedkhan.ratings.ui.home.feature.AssignFeatureFragment;
+import com.rashedkhan.ratings.ui.home.feature.FeatureFragment;
 import com.rashedkhan.ratings.ui.home.history.HistoryActivity;
 import com.rashedkhan.ratings.ui.home.profile.EditProfileFragment;
 import com.rashedkhan.ratings.ui.home.profile.ProfileFragment;
@@ -49,7 +51,7 @@ import java.util.Arrays;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class HomeActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.Transfer, EditProfileFragment.Update, HomeContract.HomeView {
+        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.Transfer, FeatureFragment.OnFragmentInteractionListener, EditProfileFragment.Update, HomeContract.HomeView {
     ActionBarDrawerToggle toggle;
     CircleImageView civEfProfilePicHeader;
     private InterstitialAd mInterstitialAd;
@@ -160,6 +162,9 @@ public class HomeActivity extends BaseActivity
                 }
                 addFragment(ProfileFragment.class);
                 break;
+            case R.id.feature:
+                addFragment(FeatureFragment.class);
+                break;
             case R.id.settingMenu:
                 addFragment(SettingFragment.class);
                 break;
@@ -239,7 +244,6 @@ public class HomeActivity extends BaseActivity
     }
 
     private void addFragment(Class targetFragment) {
-
         try {
             Fragment fragment = (Fragment) targetFragment.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -293,5 +297,12 @@ public class HomeActivity extends BaseActivity
         intent.putExtra(Intent.EXTRA_TEXT, ApiUrl.getInstance().getRatingsShareLink());
         intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share");
         startActivity(Intent.createChooser(intent, "Share"));
+    }
+
+    @Override
+    public void assignUserToFeature(int featureId) {
+        AssignFeatureFragment featureFragment = new AssignFeatureFragment();
+        featureFragment.setFeatureId(featureId);
+        transferFragment(featureFragment);
     }
 }

@@ -12,6 +12,10 @@
             android:id="@+id/profile"
             android:icon="@drawable/ic_person_black_24dp"
             android:title="Profile" />
+        <item
+            android:id="@+id/feature"
+            android:icon="@drawable/ic_person_black_24dp"
+            android:title="Feature" />
 
         <item
             android:id="@+id/historyMenu"

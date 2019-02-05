@@ -69,4 +69,6 @@
     <string name="change">Change</string>
     <string name="nobody_rated">Nobody rated yet !</string>
     <string name="opening_dialog">Find someone you know and rate him/her by the categories he has !</string>
+    <string name="create_feature">Create Feature</string>
+    <string name="create">Create</string>
 </resources>

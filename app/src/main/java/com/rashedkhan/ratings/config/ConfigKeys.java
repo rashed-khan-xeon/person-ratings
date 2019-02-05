@@ -8,6 +8,8 @@ public class ConfigKeys {
     private static ConfigKeys configKeys = null;
     public final String PREF_FILE = "ratingsPref";
     public final String PREF_NAME = "userData";
+    public final int USER = 1;
+    public final int ADMIN = 2;
 
 
     private ConfigKeys() {
