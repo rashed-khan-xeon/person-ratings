@@ -113,6 +113,9 @@ public class Util {
             return "No Response!";
         }
         if (error.getMessage() == null) {
+            if (error.networkResponse.data != null) {
+                return new String(error.networkResponse.data);
+            }
             return "Failed";
         }
         if (error.networkResponse == null) {

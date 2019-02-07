@@ -3,6 +3,7 @@ package com.rashedkhan.ratings.ui.home.search;
 import com.android.volley.VolleyError;
 import com.rashedkhan.ratings.core.RatingsApplication;
 import com.rashedkhan.ratings.core.ResponseListener;
+import com.rashedkhan.ratings.data.model.Feature;
 import com.rashedkhan.ratings.data.model.RatingSummary;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.data.repository.IHttpRepository;
@@ -46,6 +47,25 @@ public class SearchPresenter implements SearchContract.SearchPresenter {
     }
 
     @Override
+    public void searchFeatureUser(String url) {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+
+        repository.get(url, User[].class, header, new ResponseListener<User[]>() {
+            @Override
+            public void success(User[] response) {
+                view.setFeatureUserListToView(Arrays.asList(response));
+            }
+
+            @Override
+            public void error(Throwable error) {
+                view.noUserFound("Nothing found");
+            }
+        });
+    }
+
+    @Override
     public void getUserAvgRatingByCategory(String url) {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -54,6 +74,24 @@ public class SearchPresenter implements SearchContract.SearchPresenter {
             @Override
             public void success(List<RatingSummary> response) {
                 view.setUserAvgRatingsToView(response);
+            }
+
+            @Override
+            public void error(Throwable error) {
+                view.noUserRatings(Util.get().getMessage((VolleyError) error));
+            }
+        });
+    }
+
+    @Override
+    public void getFeatureListForUser(String url) {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+        repository.getAll(url, Feature[].class, header, new ResponseListener<List<Feature>>() {
+            @Override
+            public void success(List<Feature> response) {
+                view.setFeaturesToView(response);
             }
 
             @Override

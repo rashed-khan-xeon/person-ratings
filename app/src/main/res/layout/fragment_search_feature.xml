@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,8 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp"
-        android:layout_marginRight="10dp"
-        android:minHeight="150dp">
+        android:layout_marginRight="10dp" >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,39 +21,14 @@
             android:orientation="vertical"
             android:padding="10dp">
 
-            <EditText
-                android:id="@+id/etUserNameOrEmail"
-                style="@style/editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/name_email_phone_number"
-                android:inputType="textEmailAddress"
-                android:textSize="14sp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="152dp"
-                android:text="Or" />
-
             <Spinner
                 android:id="@+id/spnFeature"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:background="@drawable/spinner_background"
                 android:hint="@string/name_email_phone_number"
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/btnSearch"
-                style="@style/buttonFill"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/button_height"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:text="@string/search" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

@@ -241,7 +241,6 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         rc.setCatId(cat.getCatId());
         rc.setActive(0);
         presenter.addRatingsCategory(ApiUrl.getInstance().getAddRatingsCategoriesUrl(), RtClients.getInstance().getGson().toJson(rc));
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.rashedkhan.ratings.ui.home.feature;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,11 +48,12 @@ public class AssignFeatureFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
     private EditText etName;
     private Spinner spnFeature;
-    private ListView lvCategories, llUserList;
+    private ListView lvCategories;
     private LinearLayout llUser;
-    private Button btnCreate, btnCreateUser;
+    private Button btnCreate, btnCreateCategory, btnShowCategories;
     private int featureId = 0;
     private IHttpRepository repository;
+    private Dialog dialog;
 
     public AssignFeatureFragment() {
     }
@@ -68,35 +70,41 @@ public class AssignFeatureFragment extends BaseFragment {
 
     private void initView(View view) {
         etName = view.findViewById(R.id.etName);
-        llUserList = view.findViewById(R.id.llUserList);
         llUser = view.findViewById(R.id.llUser);
         spnFeature = view.findViewById(R.id.spnFeature);
-        btnCreateUser = view.findViewById(R.id.btnCreateUser);
+        btnCreateCategory = view.findViewById(R.id.btnCreateCategory);
+        btnShowCategories = view.findViewById(R.id.btnShowCategory);
         btnCreate = view.findViewById(R.id.btnCreate);
         lvCategories = view.findViewById(R.id.lvCategories);
         repository = new HttpRepository(getActivity());
+        int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
         if (featureId == 0) {
             getFeatureList();
-            generateCategory(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId());
+            generateCategory(userId);
         } else {
-            getUserListByFeatureId();
+
         }
         btnCreate.setOnClickListener(view1 -> {
             submitData();
         });
-        btnCreateUser.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                llUserList.setVisibility(View.GONE);
-                llUser.setVisibility(View.VISIBLE);
-            }
+        btnCreateCategory.setOnClickListener(view12 -> {
+            addCategory();
         });
+        btnShowCategories.setOnClickListener(view13 -> showCategory(userId));
     }
 
     private void submitData() {
+        if (etName.getText().toString().isEmpty()) {
+            etName.setError("Required");
+            return;
+        }
         FeatureUser user = new FeatureUser();
         Map.Entry<String, String> item = (Map.Entry<String, String>) spnFeature.getSelectedItem();
         int fId = Integer.parseInt(item.getKey());
+        if (fId == 0) {
+            Toast.makeText(getActivity(), "Please select a feature ", Toast.LENGTH_LONG).show();
+            return;
+        }
         user.setFeatureId(fId);
         user.setName(etName.getText().toString());
         user.setCategoryId(catList);
@@ -109,7 +117,6 @@ public class AssignFeatureFragment extends BaseFragment {
             public void success(Object response) {
                 Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_LONG).show();
                 featureId = fId;
-                getUserListByFeatureId();
             }
 
             @Override
@@ -119,10 +126,6 @@ public class AssignFeatureFragment extends BaseFragment {
         });
     }
 
-    private void getUserListByFeatureId() {
-        llUser.setVisibility(View.GONE);
-        llUserList.setVisibility(View.VISIBLE);
-    }
 
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -183,7 +186,7 @@ public class AssignFeatureFragment extends BaseFragment {
     private LinkedList<Integer> catList = new LinkedList<>();
 
     private void setCategories(List<Category> categoryList) {
-        UserCategoryAdapter adapter = new UserCategoryAdapter(categoryList);
+        UserCategoryAdapter adapter = new UserCategoryAdapter(categoryList, false);
         lvCategories.setAdapter(adapter);
         adapter.setItemCheckedListener(position -> {
             catList.add(categoryList.get(position).getCatId());
@@ -198,9 +201,11 @@ public class AssignFeatureFragment extends BaseFragment {
         private SearchFragment.ClickListener checkClickListener;
         private SearchFragment.ClickListener unCheckClickListener;
         private List<Category> categories;
+        private boolean forUpdate = false;
 
-        public UserCategoryAdapter(List<Category> categories) {
+        public UserCategoryAdapter(List<Category> categories, boolean forUpdate) {
             this.categories = categories;
+            this.forUpdate = forUpdate;
         }
 
         @Override
@@ -238,6 +243,9 @@ public class AssignFeatureFragment extends BaseFragment {
             if (!TextUtils.isEmpty(getItem(i).getName())) {
                 chkUserCategory.setText(categories.get(i).getName());
             }
+            if (forUpdate) {
+                chkUserCategory.setChecked(categories.get(i).getActive());
+            }
             if (chkUserCategory != null)
                 chkUserCategory.setOnClickListener(view1 -> {
                     if (chkUserCategory.isChecked()) {
@@ -255,7 +263,7 @@ public class AssignFeatureFragment extends BaseFragment {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
-        repository.getAll(ApiUrl.getInstance().getFeatureList(RatingsApplication.getInstant().getUser().getUserId()), Feature[].class, header, new ResponseListener<List<Feature>>() {
+        repository.getAll(ApiUrl.getInstance().getActiveFeatureList(RatingsApplication.getInstant().getUser().getUserId()), Feature[].class, header, new ResponseListener<List<Feature>>() {
             @Override
             public void success(List<Feature> response) {
                 LinkedHashMap<String, String> data = new LinkedHashMap<>();
@@ -266,6 +274,105 @@ public class AssignFeatureFragment extends BaseFragment {
                 }
                 SpinnerAdapter<String, String> adapter = new SpinnerAdapter<String, String>(getActivity(), android.R.layout.simple_spinner_item, data);
                 spnFeature.setAdapter(adapter);
+            }
+
+            @Override
+            public void error(Throwable error) {
+                Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void addCategory() {
+        dialog = new Dialog(getActivity());
+        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.add_category, null);
+        dialog.setContentView(layout);
+        dialog.show();
+        Button btnAddCategory = layout.findViewById(R.id.btnAddCategory);
+        EditText etCategoryName = layout.findViewById(R.id.etCategoryName);
+        btnAddCategory.setOnClickListener(view -> {
+            if (etCategoryName.getText().toString().isEmpty()) {
+                Util.get().showToastMsg(getActivity(), "Please type category name");
+                return;
+            }
+            int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
+            Category category = new Category();
+            category.setCatId(0);
+            category.setActive(1);
+            category.setName(etCategoryName.getText().toString());
+            category.setUserId(userId);
+            category.setUserTypeId(0);
+            Map<String, String> header = new HashMap<>();
+            header.put("Content-Type", "application/json");
+            header.put("accessToken", String.valueOf(userId));
+            repository.post(ApiUrl.getInstance().getAddCategoryUrl(), Category.class, RtClients.getInstance().getGson().toJson(category), header,
+                    new ResponseListener<Category>() {
+                        @Override
+                        public void success(Category response) {
+                            Toast.makeText(getActivity(), "Category Added", Toast.LENGTH_LONG).show();
+                            generateCategory(response.getUserId());
+                            if (dialog != null) {
+                                dialog.dismiss();
+                            }
+                        }
+
+                        @Override
+                        public void error(Throwable error) {
+                            if (dialog != null) {
+                                dialog.dismiss();
+                            }
+                            Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        });
+
+
+    }
+
+    private void showCategory(int userId) {
+        dialog = new Dialog(getActivity());
+        View layout = LayoutInflater.from(getActivity()).inflate(R.layout.show_category, null);
+        dialog.setContentView(layout);
+        dialog.show();
+        ListView lvShowCategories = layout.findViewById(R.id.lvShowCategories);
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(userId));
+        String url = ApiUrl.getInstance().getAllCategoriesByUserIdUrl(userId);
+        repository.getAll(url, Category[].class, header, new ResponseListener<List<Category>>() {
+            @Override
+            public void success(List<Category> response) {
+                UserCategoryAdapter adapter = new UserCategoryAdapter(response, true);
+                lvShowCategories.setAdapter(adapter);
+                adapter.setItemCheckedListener(position -> {
+                    changeActiveStatusOfCat(response.get(position).getCatId(), response.get(position).getUserId(), 1);
+                });
+                adapter.setItemUnCheckedListener(position -> {
+                    changeActiveStatusOfCat(response.get(position).getCatId(), response.get(position).getUserId(), 0);
+                });
+            }
+
+            @Override
+            public void error(Throwable error) {
+                //    view.showErrorMessage(Util.get().getMessage((VolleyError) error));
+            }
+        });
+    }
+
+    private void changeActiveStatusOfCat(int catId, int userId, int active) {
+        Category rc = new Category();
+        rc.setUserId(userId);
+        rc.setCatId(catId);
+        rc.setActive(active);
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(userId));
+        String url = ApiUrl.getInstance().getAddCategoryUrl();
+        repository.post(url, Object.class, RtClients.getInstance().getGson().toJson(rc), header, new ResponseListener<Object>() {
+            @Override
+            public void success(Object response) {
+                Toast.makeText(getActivity(), "Category Updated", Toast.LENGTH_LONG).show();
+                generateCategory(userId);
             }
 
             @Override

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:minWidth="400dp"
     android:layout_height="wrap_content"
+    android:minWidth="400dp"
     android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="Add Category"
         android:textColor="@color/white" />
 
@@ -21,7 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Category Name" />
+        android:hint="Category Name"
+        android:textSize="14sp" />
 
     <Button
         android:id="@+id/btnAddCategory"

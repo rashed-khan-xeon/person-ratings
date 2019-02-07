@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,6 +67,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
     private List<Justify> justifies = new ArrayList<>();
     String selectedRtCatName;
     private ImageView imgUserImage;
+    private CardView cvUDetails;
 
     public JustifyFragment() {
         // Required empty public constructor
@@ -130,6 +132,10 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
 
     private void setUserDetailsToView() {
         if (user != null) {
+            if (user.getFeatureId() != 0) {
+                cvUDetails.setVisibility(View.GONE);
+            }
+
             if (!TextUtils.isEmpty(user.getFullName())) {
                 tvUserFullName.setText(user.getFullName());
             }
@@ -177,6 +183,9 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                         });
                     } else {
                         try {
+                            if (user.getFeatureId() != 0) {
+                                imgUserImage.setVisibility(View.GONE);
+                            }
                             imgUserImage.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.avatar));
 
                         } catch (Exception e) {
@@ -191,6 +200,7 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
 
     @Override
     public void initViewComponents() {
+        cvUDetails = justifyView.findViewById(R.id.cvUDetails);
         tvRatingsText = justifyView.findViewById(R.id.tvRatingsText);
         tvUserPhoneNUmber = justifyView.findViewById(R.id.tvUserPhoneNUmber);
         tvUserAddress = justifyView.findViewById(R.id.tvUserAddress);
@@ -237,7 +247,6 @@ public class JustifyFragment extends BaseFragment implements JustifyContract.Jus
                 if (user.getUserSetting().getAddressVisible()) {
                     llAddress.setVisibility(View.VISIBLE);
                 }
-
 
             }
             if (user.getUserType() != null) {

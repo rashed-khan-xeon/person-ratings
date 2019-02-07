@@ -14,9 +14,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -27,10 +29,12 @@ import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseFragment;
 import com.rashedkhan.ratings.common.adapter.ExpandedListView;
 import com.rashedkhan.ratings.common.adapter.RatingAdapter;
+import com.rashedkhan.ratings.common.adapter.SpinnerAdapter;
 import com.rashedkhan.ratings.config.ApiUrl;
 import com.rashedkhan.ratings.core.RatingsApplication;
 import com.rashedkhan.ratings.core.RtClients;
 import com.rashedkhan.ratings.data.implementation.HttpRepository;
+import com.rashedkhan.ratings.data.model.Feature;
 import com.rashedkhan.ratings.data.model.RatingSummary;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.ui.home.justify.JustifyFragment;
@@ -41,7 +45,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -58,7 +64,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     private List<User> users;
     private LinearLayout cvOverallRate;
     private TextView tvNoRatingsMsg;
-
+    private Spinner spnFeature;
     View homeView;
     private Button btnSearch;
 
@@ -102,19 +108,47 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         cvOverallRate = homeView.findViewById(R.id.cvOverallRate);
         btnSearch = homeView.findViewById(R.id.btnSearch);
         etUserNameOrEmail = homeView.findViewById(R.id.etUserNameOrEmail);
+        spnFeature = homeView.findViewById(R.id.spnFeature);
         tvNoRatingsMsg = homeView.findViewById(R.id.tvNoRatingsMsg);
 
         btnSearch.setOnClickListener(view -> {
-            if (!getUrl().isEmpty()) {
-                hideKeyboard();
-                Util.get().showProgress(getActivity(), true, "Searching...");
-                presenter.searchUser(ApiUrl.getInstance().getSearchUserUrl(getUrl()));
-            }
+            searchUser();
         });
         if (RatingsApplication.getInstant().getUser() != null)
             presenter.getUserAvgRatingByCategory(ApiUrl.getInstance().getAvgRatingUrl(RatingsApplication.getInstant().getUser().getUserId()));
         adView.loadAd(new AdRequest.Builder().build());
+        getFeatures();
+        spnFeature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Map.Entry<String, String> item = (Map.Entry<String, String>) spnFeature.getSelectedItem();
+                int itemId = Integer.parseInt(item.getKey());
+                if (itemId != 0)
+                    searchFeature(itemId);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void getFeatures() {
+        presenter.getFeatureListForUser(ApiUrl.getInstance().getAllFeatureListForUser());
+    }
+
+    private void searchUser() {
+        if (!getUrl().isEmpty()) {
+            hideKeyboard();
+            Util.get().showProgress(getActivity(), true, "Searching...");
+            presenter.searchUser(ApiUrl.getInstance().getSearchUserUrl(getUrl()));
+        }
+    }
+
+    private void searchFeature(int featureId) {
+        Util.get().showProgress(getActivity(), true, "Getting result...");
+        presenter.searchFeatureUser(ApiUrl.getInstance().getFeatureWiseAssignList(featureId));
     }
 
     @Override
@@ -136,10 +170,51 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     }
 
     @Override
+    public void setFeaturesToView(List<Feature> features) {
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put("0", "--Select Feature--");
+        for (Feature feature : features) {
+            if (feature.getTitle() != null)
+                data.put(String.valueOf(feature.getFeatureId()), feature.getTitle());
+        }
+        SpinnerAdapter<String, String> adapter = new SpinnerAdapter<String, String>(getActivity(), android.R.layout.simple_spinner_item, data);
+        spnFeature.setAdapter(adapter);
+    }
+
+    @Override
+    public void setFeatureUserListToView(List<User> userList) {
+        Util.get().showProgress(getActivity(), false, null);
+        if (userList != null) {
+            Dialog dialog = new Dialog(getActivity());
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_search_result, null);
+            dialog.setContentView(view);
+            dialog.show();
+            rcvPersonList = view.findViewById(R.id.rcvPersonList);
+            adapter = new PersonListAdapter(userList, getActivity());
+            RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+            rcvPersonList.setLayoutManager(lm);
+            rcvPersonList.setItemAnimator(new DefaultItemAnimator());
+            rcvPersonList.setAdapter(adapter);
+            adapter.setOnItemClickListener(position -> {
+                if (userList.get(position).getUserId() == RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()) {
+                    Util.get().showToastMsg(getActivity(), "You can't justify yourself !");
+                    return;
+                }
+                dialog.dismiss();
+                JustifyFragment jsf = new JustifyFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("user", RtClients.getInstance().getGson().toJson(userList.get(position)));
+                jsf.setArguments(bundle);
+                transfer.transferFragment(jsf);
+            });
+        }
+    }
+
+    @Override
     public void setUserListToView(List<User> userList) {
         users = new ArrayList<>();
         for (User user : userList) {
-            if (user.getActive() && user.hasVerified()) {
+            if (user.getActive() && user.hasVerified() && user.getFeatureId() == 0) {
                 users.add(user);
             }
         }
@@ -173,10 +248,10 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     @Override
     public void onStart() {
         super.onStart();
-      //  Dialog dialog = new Dialog(getActivity());
-      //  View view = LayoutInflater.from(getActivity()).inflate(R.layout.opening_dialog, null);
-       // dialog.setContentView(view);
-       // dialog.show();
+        //  Dialog dialog = new Dialog(getActivity());
+        //  View view = LayoutInflater.from(getActivity()).inflate(R.layout.opening_dialog, null);
+        // dialog.setContentView(view);
+        // dialog.show();
     }
 
     @Override

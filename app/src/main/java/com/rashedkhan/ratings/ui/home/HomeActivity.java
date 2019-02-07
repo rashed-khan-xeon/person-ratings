@@ -3,6 +3,7 @@ package com.rashedkhan.ratings.ui.home;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.Rating;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -32,13 +33,16 @@ import com.google.gson.JsonObject;
 import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseActivity;
 import com.rashedkhan.ratings.config.ApiUrl;
+import com.rashedkhan.ratings.config.ConfigKeys;
 import com.rashedkhan.ratings.core.RatingsApplication;
 import com.rashedkhan.ratings.core.RtClients;
 import com.rashedkhan.ratings.data.implementation.HttpRepository;
 import com.rashedkhan.ratings.data.model.User;
+import com.rashedkhan.ratings.data.model.UserType;
 import com.rashedkhan.ratings.ui.home.auth.LoginActivity;
 import com.rashedkhan.ratings.ui.home.feature.AssignFeatureFragment;
 import com.rashedkhan.ratings.ui.home.feature.FeatureFragment;
+import com.rashedkhan.ratings.ui.home.feature.SearchFeatureFragment;
 import com.rashedkhan.ratings.ui.home.history.HistoryActivity;
 import com.rashedkhan.ratings.ui.home.profile.EditProfileFragment;
 import com.rashedkhan.ratings.ui.home.profile.ProfileFragment;
@@ -57,6 +61,7 @@ public class HomeActivity extends BaseActivity
     private InterstitialAd mInterstitialAd;
     Dialog dialog;
     private HomePresenter presenter;
+    NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +69,7 @@ public class HomeActivity extends BaseActivity
         setContentView(R.layout.activity_home);
         presenter = new HomePresenter(this, new HttpRepository(this));
         configToolbar();
-        addFragment(SearchFragment.class);
+        goToHome();
         initViewComponents();
         MobileAds.initialize(this, getString(R.string.admob_app_id));
         mInterstitialAd = new InterstitialAd(this);
@@ -89,7 +94,7 @@ public class HomeActivity extends BaseActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -126,6 +131,21 @@ public class HomeActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
+        MenuItem share = menu.findItem(R.id.share);
+        MenuItem setting = menu.findItem(R.id.settings);
+
+        if (RatingsApplication.getInstant().getUser().getUserRole().getRoleId() == ConfigKeys.getInstant().ADMIN) {
+            share.setVisible(false);
+            setting.setVisible(false);
+            Menu navMenu = navigationView.getMenu();
+            navMenu.getItem(1).setVisible(false);
+            navMenu.getItem(2).setVisible(false);
+            navMenu.getItem(3).setVisible(false);
+            navMenu.getItem(4).setVisible(false);
+        } else {
+            Menu navMenu = navigationView.getMenu();
+            navMenu.getItem(2).setVisible(false);
+        }
         return true;
     }
 
@@ -146,13 +166,20 @@ public class HomeActivity extends BaseActivity
         }
     }
 
+    private void goToHome() {
+        if (RatingsApplication.getInstant().getUser().getUserRole().getRoleId() == ConfigKeys.getInstant().ADMIN) {
+            addFragment(FeatureFragment.class);
+        } else {
+            addFragment(SearchFragment.class);
+        }
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case R.id.homeMenu:
-                addFragment(SearchFragment.class);
+                goToHome();
                 break;
             case R.id.profile:
                 if (mInterstitialAd.isLoaded()) {
@@ -200,6 +227,8 @@ public class HomeActivity extends BaseActivity
             share();
         } else if (item.getItemId() == R.id.settings) {
             addFragment(SettingFragment.class);
+        } else if (item.getItemId() == R.id.home) {
+            goToHome();
         }
         return true;
     }
@@ -245,6 +274,7 @@ public class HomeActivity extends BaseActivity
 
     private void addFragment(Class targetFragment) {
         try {
+            getSupportFragmentManager().getFragments().clear();
             Fragment fragment = (Fragment) targetFragment.newInstance();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.setCustomAnimations(android.R.anim.slide_in_left, android.R.anim.slide_out_right);

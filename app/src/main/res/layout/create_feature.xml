@@ -28,7 +28,7 @@
         android:textSize="14sp"
         android:layout_marginRight="10dp"
         android:hint="Feature title"
-        android:inputType="textPassword" />
+        android:inputType="text" />
 
 
     <Button

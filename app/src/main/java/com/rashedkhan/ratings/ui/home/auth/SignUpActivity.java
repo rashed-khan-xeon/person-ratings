@@ -192,17 +192,17 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         RatingsPref pref = new RatingsPref();
         pref.setUser(user);
         RatingsApplication.getInstant().setPreference(pref);
-//        if (!RatingsApplication.getInstant().isOTPAvailable()) {
-//            startActivity(new Intent(this, HomeActivity.class));
-//            return;
-//        }
-//        if (!user.hasVerified()) {
-//            startActivity(new Intent(this, VerificationActivity.class));
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        } else {
-//            startActivity(new Intent(this, HomeActivity.class));
-//            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        }
+        if (!RatingsApplication.getInstant().isOTPAvailable()) {
+            startActivity(new Intent(this, HomeActivity.class));
+            return;
+        }
+        if (!user.hasVerified()) {
+            startActivity(new Intent(this, VerificationActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        } else {
+            startActivity(new Intent(this, HomeActivity.class));
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
 
         startActivity(new Intent(this, HomeActivity.class));
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);

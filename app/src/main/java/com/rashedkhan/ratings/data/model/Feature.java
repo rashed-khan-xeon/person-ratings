@@ -6,6 +6,7 @@ public class Feature {
     private int featureId;
     private String title;
     private int createdUserId;
+    private int active;
     private List<User> users;
 
     public int getFeatureId() {
@@ -38,5 +39,13 @@ public class Feature {
 
     public void setUsers(List<User> users) {
         this.users = users;
+    }
+
+    public boolean getActive() {
+        return active == 1;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
     }
 }

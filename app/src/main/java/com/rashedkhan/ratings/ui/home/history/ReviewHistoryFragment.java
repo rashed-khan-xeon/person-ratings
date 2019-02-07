@@ -113,7 +113,7 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
         adapter.notifyDataSetChanged();
     }
 
-    private class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.BaseHolder> {
+    public static class UserReviewAdapter extends RecyclerView.Adapter<UserReviewAdapter.BaseHolder> {
         List<UserReview> userReviews;
         Context context;
 
@@ -149,7 +149,7 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
                     }
                 }
                 if (getItem(position).getReviewDate() != null) {
-                 //   Calendar calendar = Calendar.getInstance();
+                    //   Calendar calendar = Calendar.getInstance();
                     SimpleDateFormat formatter = new SimpleDateFormat("dd - MMMM - yyyy", Locale.US);
                     String s = formatter.format(getItem(position).getReviewDate());
 //                    calendar.setTime(getItem(position).getReviewDate());
@@ -175,10 +175,11 @@ public class ReviewHistoryFragment extends Fragment implements HistoryContract.R
 
         @Override
         public int getItemViewType(int position) {
-            if (getItemCount() == 1) {
+            if (userReviews == null || userReviews.size() == 0) {
                 return 1;
-            } else
-                return 2;
+            } else {
+                return 0;
+            }
         }
 
         public class Holder extends BaseHolder {

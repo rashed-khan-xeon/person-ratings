@@ -120,6 +120,18 @@ public class ApiUrl {
         return BASE_URL + "api/v1/get-feature-list?userId=" + userId;
     }
 
+    public String getActiveFeatureList(int userId) {
+        return BASE_URL + "api/v1/get-active-feature-list?userId=" + userId;
+    }
+
+    public String getUpdateFeatureUser() {
+        return BASE_URL + "api/v1/update-feature-user";
+    }
+
+    public String getFeatureWiseAssignList(int featureId) {
+        return BASE_URL + "api/v1/get-users-by-featureId?featureId=" + featureId;
+    }
+
     public String getUserImageUploadUrl() {
         return BASE_URL + "api/v1/user-upload-image";
     }
@@ -132,4 +144,12 @@ public class ApiUrl {
         return "https://play.google.com/store/apps/details?id=com.rashedkhan.ratings";
     }
 
+
+    public String getAllCategoriesByUserIdUrl(int userId) {
+        return BASE_URL + "api/v1/all-categories-by-user-id?userId=" + userId;
+    }
+
+    public String getAllFeatureListForUser() {
+        return BASE_URL + "api/v1/all-featurelist-for-user";
+    }
 }

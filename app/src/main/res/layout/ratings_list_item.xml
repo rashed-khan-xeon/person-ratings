@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:elevation="4dp"
-    android:layout_margin="5dp"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginTop="2dp"
+    android:layout_marginStart="5dp"
+    android:layout_marginEnd="5dp"
+    android:elevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,13 +18,21 @@
             android:id="@+id/tvRatingsDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textStyle="bold" />
+            android:padding="5dp" />
+
         <TextView
             android:id="@+id/tvRatingsCatTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="5dp"
+            android:padding="2dp"
+            android:textSize="12sp" />
+
+
+        <TextView
+            android:id="@+id/tvRatingsStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="2dp"
             android:textSize="12sp" />
 
         <RatingBar
@@ -31,15 +41,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="10" />
-
-        <TextView
-            android:id="@+id/tvRatingsStatus"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textSize="12sp" />
-
-
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -1,23 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:orientation="vertical"
     tools:context=".ui.home.feature.AssignFeatureFragment">
 
     <Button
-        android:id="@+id/btnCreateUser"
+        android:id="@+id/btnShowCategory"
+        style="@style/buttonFill"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create User"
-        android:visibility="gone" />
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="5dp"
+        android:layout_toStartOf="@id/btnCreateCategory"
+        android:layout_marginEnd="14dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="Show Categories"
+        android:textAllCaps="false"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnCreateCategory"
+        style="@style/buttonFill"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/button_height"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="14dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:text="Create Category"
+        android:textAllCaps="false"
+        android:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/llUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/btnCreateCategory"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center"
         android:orientation="vertical"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
@@ -29,8 +55,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:gravity="center"
-            android:text="Create User "
-            android:textSize="18sp" />
+            android:text="Create Related Feature "
+            android:textSize="14sp" />
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -70,14 +96,15 @@
                 android:layout_marginTop="10dp"
                 android:text="Choose Category" />
 
-            <com.rashedkhan.ratings.common.adapter.ExpandedListView
+            <ListView
                 android:id="@+id/lvCategories"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="250dp"
                 android:layout_marginTop="10dp"
                 android:paddingLeft="10dp"
                 android:paddingRight="10dp"
-                android:paddingBottom="20dp" />
+                android:paddingBottom="20dp"
+                android:scrollbars="vertical" />
 
             <Button
                 android:id="@+id/btnCreate"
@@ -94,9 +121,4 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/llUserList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
-</LinearLayout>
+</RelativeLayout>

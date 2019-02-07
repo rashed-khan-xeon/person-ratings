@@ -17,6 +17,7 @@ public class User {
     private String designation;
     private String orgName;
     private String image;
+    private int featureId;
     private int hasVerified;
 
     private int active;
@@ -157,5 +158,13 @@ public class User {
 
     public void setHasVerified(int hasVerified) {
         this.hasVerified = hasVerified;
+    }
+
+    public int getFeatureId() {
+        return featureId;
+    }
+
+    public void setFeatureId(int featureId) {
+        this.featureId = featureId;
     }
 }
