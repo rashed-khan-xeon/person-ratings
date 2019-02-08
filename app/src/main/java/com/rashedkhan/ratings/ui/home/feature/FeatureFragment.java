@@ -39,6 +39,8 @@ import com.rashedkhan.ratings.ui.home.history.ReviewHistoryFragment;
 import com.rashedkhan.ratings.ui.home.search.SearchFragment;
 import com.rashedkhan.ratings.util.Util;
 
+import org.w3c.dom.Text;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class FeatureFragment extends BaseFragment {
     private OnFragmentInteractionListener mListener;
     private Button btnCreateFeature, btnAssign;
     private ListView lvFeatureList;
+    private TextView tvNoContent;
     private IHttpRepository repository;
     private Dialog dialog;
 
@@ -67,6 +70,7 @@ public class FeatureFragment extends BaseFragment {
     private void init(View view) {
         repository = new HttpRepository(getActivity());
         btnAssign = view.findViewById(R.id.btnAssign);
+        tvNoContent = view.findViewById(R.id.tvNoContent);
         btnCreateFeature = view.findViewById(R.id.btnCreateFeature);
         lvFeatureList = view.findViewById(R.id.lvFeatureList);
         btnCreateFeature.setOnClickListener(view1 -> {
@@ -105,10 +109,20 @@ public class FeatureFragment extends BaseFragment {
                     feature.setActive(0);
                     submitFeature(feature);
                 });
+                if (response.size() == 0) {
+                    lvFeatureList.setVisibility(View.GONE);
+                    tvNoContent.setVisibility(View.VISIBLE);
+                } else {
+
+                    lvFeatureList.setVisibility(View.VISIBLE);
+                    tvNoContent.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void error(Throwable error) {
+                lvFeatureList.setVisibility(View.GONE);
+                tvNoContent.setVisibility(View.VISIBLE);
                 Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
@@ -217,6 +231,7 @@ public class FeatureFragment extends BaseFragment {
             Feature feature = new Feature();
             feature.setCreatedUserId(RatingsApplication.getInstant().getUser().getUserId());
             feature.setTitle(etFeatureTitle.getText().toString());
+            feature.setActive(1);
             submitFeature(feature);
         });
 

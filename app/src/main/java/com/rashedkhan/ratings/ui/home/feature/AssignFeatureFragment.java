@@ -37,6 +37,7 @@ import com.rashedkhan.ratings.ui.home.search.SearchFragment;
 import com.rashedkhan.ratings.ui.home.setting.SettingFragment;
 import com.rashedkhan.ratings.util.Util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -84,11 +85,17 @@ public class AssignFeatureFragment extends BaseFragment {
         } else {
 
         }
-        btnCreate.setOnClickListener(view1 -> {
-            submitData();
+        btnCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view1) {
+                AssignFeatureFragment.this.submitData();
+            }
         });
-        btnCreateCategory.setOnClickListener(view12 -> {
-            addCategory();
+        btnCreateCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view12) {
+                AssignFeatureFragment.this.addCategory();
+            }
         });
         btnShowCategories.setOnClickListener(view13 -> showCategory(userId));
     }
@@ -107,7 +114,11 @@ public class AssignFeatureFragment extends BaseFragment {
         }
         user.setFeatureId(fId);
         user.setName(etName.getText().toString());
-        user.setCategoryId(catList);
+        List<Integer> cats = new ArrayList<>();
+        for (Category ct : catList) {
+            cats.add(ct.getCatId());
+        }
+        user.setCategoryId(cats);
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
@@ -117,6 +128,7 @@ public class AssignFeatureFragment extends BaseFragment {
             public void success(Object response) {
                 Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_LONG).show();
                 featureId = fId;
+                clearView();
             }
 
             @Override
@@ -124,6 +136,12 @@ public class AssignFeatureFragment extends BaseFragment {
                 Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void clearView() {
+        etName.setText("");
+        spnFeature.setSelection(0);
+        generateCategory(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId());
     }
 
 
@@ -183,16 +201,24 @@ public class AssignFeatureFragment extends BaseFragment {
         void onFragmentInteraction(Uri uri);
     }
 
-    private LinkedList<Integer> catList = new LinkedList<>();
+    private LinkedList<Category> catList = new LinkedList<>();
 
     private void setCategories(List<Category> categoryList) {
+        catList.clear();
         UserCategoryAdapter adapter = new UserCategoryAdapter(categoryList, false);
         lvCategories.setAdapter(adapter);
-        adapter.setItemCheckedListener(position -> {
-            catList.add(categoryList.get(position).getCatId());
+        adapter.setItemCheckedListener(new SearchFragment.ClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                if (!catList.contains(categoryList.get(position)))
+                    catList.add(categoryList.get(position));
+            }
         });
-        adapter.setItemUnCheckedListener(position -> {
-            catList.remove(categoryList.get(position).getCatId());
+        adapter.setItemUnCheckedListener(new SearchFragment.ClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                catList.remove(categoryList.get(position));
+            }
         });
 
     }
@@ -344,11 +370,17 @@ public class AssignFeatureFragment extends BaseFragment {
             public void success(List<Category> response) {
                 UserCategoryAdapter adapter = new UserCategoryAdapter(response, true);
                 lvShowCategories.setAdapter(adapter);
-                adapter.setItemCheckedListener(position -> {
-                    changeActiveStatusOfCat(response.get(position).getCatId(), response.get(position).getUserId(), 1);
+                adapter.setItemCheckedListener(new SearchFragment.ClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        changeActiveStatusOfCat(response.get(position).getCatId(), response.get(position).getUserId(), 1);
+                    }
                 });
-                adapter.setItemUnCheckedListener(position -> {
-                    changeActiveStatusOfCat(response.get(position).getCatId(), response.get(position).getUserId(), 0);
+                adapter.setItemUnCheckedListener(new SearchFragment.ClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        changeActiveStatusOfCat(response.get(position).getCatId(), response.get(position).getUserId(), 0);
+                    }
                 });
             }
 

@@ -21,7 +21,7 @@ public class RatingsApplication extends Application {
     private static final String COOKIE_KEY = "Cookie";
     private static final String SESSION_COOKIE = "sessionid";
     private SharedPreferences _preferences;
-    private String countryCode = null;
+    private String countryCode = "BD";
 
     public static RatingsApplication getInstant() {
         return application;

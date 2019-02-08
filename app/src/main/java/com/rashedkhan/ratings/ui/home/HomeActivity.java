@@ -167,7 +167,11 @@ public class HomeActivity extends BaseActivity
     }
 
     private void goToHome() {
-        if (RatingsApplication.getInstant().getUser().getUserRole().getRoleId() == ConfigKeys.getInstant().ADMIN) {
+        if (RatingsApplication.getInstant().getUser() == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            return;
+        }
+        if (RatingsApplication.getInstant().getUser().getUserRole() != null && RatingsApplication.getInstant().getUser().getUserRole().getRoleId() == ConfigKeys.getInstant().ADMIN) {
             addFragment(FeatureFragment.class);
         } else {
             addFragment(SearchFragment.class);

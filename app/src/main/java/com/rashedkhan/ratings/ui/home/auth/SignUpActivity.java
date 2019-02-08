@@ -199,13 +199,13 @@ public class SignUpActivity extends BaseActivity implements AuthContract.AuthVie
         if (!user.hasVerified()) {
             startActivity(new Intent(this, VerificationActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
         } else {
             startActivity(new Intent(this, HomeActivity.class));
             overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+
         }
 
-        startActivity(new Intent(this, HomeActivity.class));
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     @Override
