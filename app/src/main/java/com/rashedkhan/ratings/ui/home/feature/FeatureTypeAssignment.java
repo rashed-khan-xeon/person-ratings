@@ -80,10 +80,13 @@ public class FeatureTypeAssignment extends BaseFragment {
                             response.get(position).setActive(0);
                             updateFeatureType(response.get(position));
                         });
-                        lvFeatureTypeList.setOnItemClickListener((adapterView, view, i, l) -> {
-                            Intent intent = new Intent(getActivity(), FeatureActivity.class);
-                            intent.putExtra(FeatureActivity.FEATURE_TYPE_ID, String.valueOf(response.get(i)));
-                            startActivity(intent);
+                        adapter.onItemClickListener(new SearchFragment.ClickListener() {
+                            @Override
+                            public void onItemClick(int position) {
+                                Intent intent = new Intent(getActivity(), FeatureActivity.class);
+                                intent.putExtra(FeatureActivity.FEATURE_TYPE_ID, String.valueOf(response.get(position).getFeatureTypeId()));
+                                startActivity(intent);
+                            }
                         });
                     }
 

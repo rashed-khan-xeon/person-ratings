@@ -49,6 +49,7 @@ public class AssignFeatureActivity extends BaseActivity {
     private int featureId = 0;
     private IHttpRepository repository;
     private Dialog dialog;
+    private int featureTypeId = 0;
 
 
     @Override
@@ -68,12 +69,8 @@ public class AssignFeatureActivity extends BaseActivity {
         lvCategories = findViewById(R.id.lvCategories);
         repository = new HttpRepository(getActivity());
         int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
-        if (featureId == 0) {
-            getFeatureList();
-            generateCategory(userId);
-        } else {
-
-        }
+        featureTypeId = Integer.parseInt(getIntent().getStringExtra(FeatureActivity.FEATURE_TYPE_ID));
+        generateCategory(userId);
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view1) {
@@ -157,14 +154,10 @@ public class AssignFeatureActivity extends BaseActivity {
     }
 
 
-    public void setFeatureId(int featureId) {
-        this.featureId = featureId;
-    }
-
     @Override
     public void onResume() {
         super.onResume();
-
+        getFeatureList();
     }
 
     public interface OnFragmentInteractionListener {
@@ -260,7 +253,7 @@ public class AssignFeatureActivity extends BaseActivity {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
-        repository.getAll(ApiUrl.getInstance().getActiveFeatureList(RatingsApplication.getInstant().getUser().getUserId()), Feature[].class, header, new ResponseListener<List<Feature>>() {
+        repository.getAll(ApiUrl.getInstance().getActiveFeatureListByType(featureTypeId), Feature[].class, header, new ResponseListener<List<Feature>>() {
             @Override
             public void success(List<Feature> response) {
                 LinkedHashMap<String, String> data = new LinkedHashMap<>();

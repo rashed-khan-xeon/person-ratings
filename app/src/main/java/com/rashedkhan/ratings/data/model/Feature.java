@@ -6,6 +6,7 @@ public class Feature {
     private int featureId;
     private String title;
     private int createdUserId;
+    private int featureTypeId;
     private int active;
     private List<User> users;
 
@@ -47,5 +48,13 @@ public class Feature {
 
     public void setActive(int active) {
         this.active = active;
+    }
+
+    public int getFeatureTypeId() {
+        return featureTypeId;
+    }
+
+    public void setFeatureTypeId(int featureTypeId) {
+        this.featureTypeId = featureTypeId;
     }
 }

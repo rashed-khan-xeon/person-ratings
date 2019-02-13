@@ -124,8 +124,8 @@ public class ApiUrl {
         return BASE_URL + "api/v1/get-feature-list-by-type?featureTypeId=" + typeId;
     }
 
-    public String getActiveFeatureList(int userId) {
-        return BASE_URL + "api/v1/get-active-feature-list?userId=" + userId;
+    public String getActiveFeatureTypeList() {
+        return BASE_URL + "api/v1/active-feature-type-list";
     }
 
     public String getUpdateFeatureUser() {
@@ -164,5 +164,9 @@ public class ApiUrl {
 
     public String getFeatureTypes(int userId) {
         return BASE_URL + "api/v1/feature-type-list?userId=" + userId;
+    }
+
+    public String getActiveFeatureListByType(int featureTypeId) {
+        return BASE_URL + "api/v1/get-active-feature-list-by-type-id?featureTypeId=" + featureTypeId;
     }
 }

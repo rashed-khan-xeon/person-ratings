@@ -1,6 +1,7 @@
 package com.rashedkhan.ratings.ui.home.search;
 
 import com.rashedkhan.ratings.data.model.Feature;
+import com.rashedkhan.ratings.data.model.FeatureType;
 import com.rashedkhan.ratings.data.model.RatingSummary;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.ui.home.common.BaseView;
@@ -19,14 +20,19 @@ public interface SearchContract {
 
         void getUserAvgRatingByCategory(String url);
 
+        void getFeatureTypeListForUser(String url);
+
         void getFeatureListForUser(String allFeatureListForUser);
     }
 
     interface SearchView extends BaseView {
         void setUserListToView(List<User> userList);
+
         void setFeatureUserListToView(List<User> userList);
 
         void setFeaturesToView(List<Feature> features);
+
+        void setFeatureTypeToView(List<FeatureType> featureTypes);
 
         void setUserAvgRatingsToView(List<RatingSummary> avgRating);
 

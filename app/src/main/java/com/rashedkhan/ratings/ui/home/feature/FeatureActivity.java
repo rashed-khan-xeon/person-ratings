@@ -3,6 +3,7 @@ package com.rashedkhan.ratings.ui.home.feature;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -70,12 +71,14 @@ public class FeatureActivity extends BaseActivity {
             createFeature();
         });
         btnAssign.setOnClickListener(view12 -> {
-            assignUserToFeature(0);
+            assignUserToFeature();
         });
     }
 
-    private void assignUserToFeature(int i) {
-
+    private void assignUserToFeature() {
+        Intent intent = new Intent(this, AssignFeatureActivity.class);
+        intent.putExtra(FEATURE_TYPE_ID, String.valueOf(featureTypeId));
+        startActivity(intent);
     }
 
 
@@ -210,6 +213,7 @@ public class FeatureActivity extends BaseActivity {
             feature.setCreatedUserId(RatingsApplication.getInstant().getUser().getUserId());
             feature.setTitle(etFeatureTitle.getText().toString());
             feature.setActive(1);
+            feature.setFeatureTypeId(featureTypeId);
             submitFeature(feature);
         });
 

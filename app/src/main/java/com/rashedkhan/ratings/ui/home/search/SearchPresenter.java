@@ -4,6 +4,7 @@ import com.android.volley.VolleyError;
 import com.rashedkhan.ratings.core.RatingsApplication;
 import com.rashedkhan.ratings.core.ResponseListener;
 import com.rashedkhan.ratings.data.model.Feature;
+import com.rashedkhan.ratings.data.model.FeatureType;
 import com.rashedkhan.ratings.data.model.RatingSummary;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.data.repository.IHttpRepository;
@@ -74,6 +75,24 @@ public class SearchPresenter implements SearchContract.SearchPresenter {
             @Override
             public void success(List<RatingSummary> response) {
                 view.setUserAvgRatingsToView(response);
+            }
+
+            @Override
+            public void error(Throwable error) {
+                view.noUserRatings(Util.get().getMessage((VolleyError) error));
+            }
+        });
+    }
+
+    @Override
+    public void getFeatureTypeListForUser(String url) {
+        Map<String, String> header = new HashMap<>();
+        header.put("Content-Type", "application/json");
+        header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
+        repository.getAll(url, FeatureType[].class, header, new ResponseListener<List<FeatureType>>() {
+            @Override
+            public void success(List<FeatureType> response) {
+                view.setFeatureTypeToView(response);
             }
 
             @Override

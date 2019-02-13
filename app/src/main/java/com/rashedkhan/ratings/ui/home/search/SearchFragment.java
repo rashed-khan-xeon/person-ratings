@@ -35,6 +35,7 @@ import com.rashedkhan.ratings.core.RatingsApplication;
 import com.rashedkhan.ratings.core.RtClients;
 import com.rashedkhan.ratings.data.implementation.HttpRepository;
 import com.rashedkhan.ratings.data.model.Feature;
+import com.rashedkhan.ratings.data.model.FeatureType;
 import com.rashedkhan.ratings.data.model.RatingSummary;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.ui.home.justify.JustifyFragment;
@@ -64,7 +65,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     private List<User> users;
     private LinearLayout cvOverallRate;
     private TextView tvNoRatingsMsg;
-    private Spinner spnFeature;
+    private Spinner spnFeature, spnFeatureType;
     View homeView;
     private Button btnSearch;
 
@@ -109,6 +110,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         btnSearch = homeView.findViewById(R.id.btnSearch);
         etUserNameOrEmail = homeView.findViewById(R.id.etUserNameOrEmail);
         spnFeature = homeView.findViewById(R.id.spnFeature);
+        spnFeatureType = homeView.findViewById(R.id.spnFeatureType);
         tvNoRatingsMsg = homeView.findViewById(R.id.tvNoRatingsMsg);
 
         btnSearch.setOnClickListener(view -> {
@@ -117,7 +119,7 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         if (RatingsApplication.getInstant().getUser() != null)
             presenter.getUserAvgRatingByCategory(ApiUrl.getInstance().getAvgRatingUrl(RatingsApplication.getInstant().getUser().getUserId()));
         adView.loadAd(new AdRequest.Builder().build());
-        getFeatures();
+        getFeatureTypes();
         spnFeature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -132,10 +134,28 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
 
             }
         });
+        spnFeatureType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Map.Entry<String, String> item = (Map.Entry<String, String>) spnFeatureType.getSelectedItem();
+                int itemId = Integer.parseInt(item.getKey());
+                if (itemId != 0)
+                    getFeatures(itemId);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
     }
 
-    private void getFeatures() {
-        presenter.getFeatureListForUser(ApiUrl.getInstance().getAllFeatureListForUser());
+    private void getFeatureTypes() {
+        presenter.getFeatureTypeListForUser(ApiUrl.getInstance().getActiveFeatureTypeList());
+    }
+
+    private void getFeatures(int typeId) {
+        presenter.getFeatureListForUser(ApiUrl.getInstance().getFeatureListByTypeId(typeId));
     }
 
     private void searchUser() {
@@ -167,6 +187,18 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
     public void onAttach(Context context) {
         super.onAttach(context);
         transfer = (Transfer) context;
+    }
+
+    @Override
+    public void setFeatureTypeToView(List<FeatureType> featureTypes) {
+        LinkedHashMap<String, String> data = new LinkedHashMap<>();
+        data.put("0", "--Select Type--");
+        for (FeatureType featureType : featureTypes) {
+            if (featureType.getTitle() != null)
+                data.put(String.valueOf(featureType.getFeatureTypeId()), featureType.getTitle());
+        }
+        SpinnerAdapter<String, String> adapter = new SpinnerAdapter<String, String>(getActivity(), android.R.layout.simple_spinner_item, data);
+        spnFeatureType.setAdapter(adapter);
     }
 
     @Override
