@@ -49,6 +49,8 @@
 
         </activity>
         <activity android:name=".ui.home.justify.JustifyActivity" />
+        <activity android:name=".ui.home.feature.FeatureActivity" />
+        <activity android:name=".ui.home.feature.AssignFeatureActivity" />
         <activity android:name=".ui.home.history.HistoryActivity" />
         <activity android:name=".ui.home.SplashActivity">
             <intent-filter>

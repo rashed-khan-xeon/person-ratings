@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +15,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.rashedkhan.ratings.R;
-import com.rashedkhan.ratings.common.BaseFragment;
+import com.rashedkhan.ratings.common.BaseActivity;
 import com.rashedkhan.ratings.common.adapter.SpinnerAdapter;
 import com.rashedkhan.ratings.config.ApiUrl;
 import com.rashedkhan.ratings.core.RatingsApplication;
@@ -31,10 +29,8 @@ import com.rashedkhan.ratings.data.implementation.HttpRepository;
 import com.rashedkhan.ratings.data.model.Category;
 import com.rashedkhan.ratings.data.model.Feature;
 import com.rashedkhan.ratings.data.model.FeatureUser;
-import com.rashedkhan.ratings.data.model.RatingsCategory;
 import com.rashedkhan.ratings.data.repository.IHttpRepository;
 import com.rashedkhan.ratings.ui.home.search.SearchFragment;
-import com.rashedkhan.ratings.ui.home.setting.SettingFragment;
 import com.rashedkhan.ratings.util.Util;
 
 import java.util.ArrayList;
@@ -44,9 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class AssignFeatureFragment extends BaseFragment {
-
-    private OnFragmentInteractionListener mListener;
+public class AssignFeatureActivity extends BaseActivity {
     private EditText etName;
     private Spinner spnFeature;
     private ListView lvCategories;
@@ -56,27 +50,22 @@ public class AssignFeatureFragment extends BaseFragment {
     private IHttpRepository repository;
     private Dialog dialog;
 
-    public AssignFeatureFragment() {
-    }
-
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View view = inflater.inflate(R.layout.fragment_assign_feature, container, false);
-        initView(view);
-        return view;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_assign_feature);
+        initView();
     }
 
-    private void initView(View view) {
-        etName = view.findViewById(R.id.etName);
-        llUser = view.findViewById(R.id.llUser);
-        spnFeature = view.findViewById(R.id.spnFeature);
-        btnCreateCategory = view.findViewById(R.id.btnCreateCategory);
-        btnShowCategories = view.findViewById(R.id.btnShowCategory);
-        btnCreate = view.findViewById(R.id.btnCreate);
-        lvCategories = view.findViewById(R.id.lvCategories);
+    private void initView() {
+        etName = findViewById(R.id.etName);
+        llUser = findViewById(R.id.llUser);
+        spnFeature = findViewById(R.id.spnFeature);
+        btnCreateCategory = findViewById(R.id.btnCreateCategory);
+        btnShowCategories = findViewById(R.id.btnShowCategory);
+        btnCreate = findViewById(R.id.btnCreate);
+        lvCategories = findViewById(R.id.lvCategories);
         repository = new HttpRepository(getActivity());
         int userId = RatingsApplication.getInstant().getRatingsPref().getUser().getUserId();
         if (featureId == 0) {
@@ -88,16 +77,20 @@ public class AssignFeatureFragment extends BaseFragment {
         btnCreate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view1) {
-                AssignFeatureFragment.this.submitData();
+                AssignFeatureActivity.this.submitData();
             }
         });
         btnCreateCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view12) {
-                AssignFeatureFragment.this.addCategory();
+                AssignFeatureActivity.this.addCategory();
             }
         });
         btnShowCategories.setOnClickListener(view13 -> showCategory(userId));
+    }
+
+    private Context getActivity() {
+        return this;
     }
 
     private void submitData() {
@@ -145,12 +138,6 @@ public class AssignFeatureFragment extends BaseFragment {
     }
 
 
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     private void generateCategory(int userId) {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
@@ -169,22 +156,6 @@ public class AssignFeatureFragment extends BaseFragment {
         });
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
     public void setFeatureId(int featureId) {
         this.featureId = featureId;

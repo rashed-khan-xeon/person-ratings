@@ -17,8 +17,8 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-//    private final String BASE_URL = "http://192.168.0.12/ratings/";
-    private final String BASE_URL = "http://ratings.rashedkhan.com/";
+    private final String BASE_URL = "http://192.168.0.12/ratings/";
+//    private final String BASE_URL = "http://ratings.rashedkhan.com/";
 
     public String getBASE_URL() {
         return BASE_URL;
@@ -120,6 +120,10 @@ public class ApiUrl {
         return BASE_URL + "api/v1/get-feature-list?userId=" + userId;
     }
 
+    public String getFeatureListByTypeId(int typeId) {
+        return BASE_URL + "api/v1/get-feature-list-by-type?featureTypeId=" + typeId;
+    }
+
     public String getActiveFeatureList(int userId) {
         return BASE_URL + "api/v1/get-active-feature-list?userId=" + userId;
     }
@@ -151,5 +155,14 @@ public class ApiUrl {
 
     public String getAllFeatureListForUser() {
         return BASE_URL + "api/v1/all-featurelist-for-user";
+    }
+
+    public String createFeatureType() {
+        return BASE_URL + "api/v1/create-feature-type";
+
+    }
+
+    public String getFeatureTypes(int userId) {
+        return BASE_URL + "api/v1/feature-type-list?userId=" + userId;
     }
 }

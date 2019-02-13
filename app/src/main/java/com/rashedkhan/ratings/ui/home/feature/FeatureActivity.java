@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.rashedkhan.ratings.R;
+import com.rashedkhan.ratings.common.BaseActivity;
 import com.rashedkhan.ratings.common.BaseFragment;
 import com.rashedkhan.ratings.common.adapter.ExpandedListView;
 import com.rashedkhan.ratings.common.adapter.RatingAdapter;
@@ -39,51 +40,49 @@ import com.rashedkhan.ratings.ui.home.history.ReviewHistoryFragment;
 import com.rashedkhan.ratings.ui.home.search.SearchFragment;
 import com.rashedkhan.ratings.util.Util;
 
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FeatureFragment extends BaseFragment {
-
-    private OnFragmentInteractionListener mListener;
+public class FeatureActivity extends BaseActivity {
     private Button btnCreateFeature, btnAssign;
     private ListView lvFeatureList;
     private TextView tvNoContent;
     private IHttpRepository repository;
     private Dialog dialog;
-
-    public FeatureFragment() {
-        // Required empty public constructor
-    }
-
+    private int featureTypeId = 0;
+    public static String FEATURE_TYPE_ID = "featureTypeId";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_feature, container, false);
-        init(view);
-        return view;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragment_feature);
+        init();
     }
 
-    private void init(View view) {
-        repository = new HttpRepository(getActivity());
-        btnAssign = view.findViewById(R.id.btnAssign);
-        tvNoContent = view.findViewById(R.id.tvNoContent);
-        btnCreateFeature = view.findViewById(R.id.btnCreateFeature);
-        lvFeatureList = view.findViewById(R.id.lvFeatureList);
+    private void init() {
+        repository = new HttpRepository(this);
+        btnAssign = findViewById(R.id.btnAssign);
+        tvNoContent = findViewById(R.id.tvNoContent);
+        btnCreateFeature = findViewById(R.id.btnCreateFeature);
+        lvFeatureList = findViewById(R.id.lvFeatureList);
         btnCreateFeature.setOnClickListener(view1 -> {
             createFeature();
         });
         btnAssign.setOnClickListener(view12 -> {
-            mListener.assignUserToFeature(0);
+            assignUserToFeature(0);
         });
     }
+
+    private void assignUserToFeature(int i) {
+
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
+        featureTypeId = Integer.parseInt(getIntent().getStringExtra(FEATURE_TYPE_ID));
         getFeatureList();
     }
 
@@ -91,7 +90,7 @@ public class FeatureFragment extends BaseFragment {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
-        repository.getAll(ApiUrl.getInstance().getFeatureList(RatingsApplication.getInstant().getUser().getUserId()), Feature[].class, header, new ResponseListener<List<Feature>>() {
+        repository.getAll(ApiUrl.getInstance().getFeatureListByTypeId(featureTypeId), Feature[].class, header, new ResponseListener<List<Feature>>() {
             @Override
             public void success(List<Feature> response) {
                 FeatureAdapter adapter = new FeatureAdapter(response);
@@ -123,30 +122,9 @@ public class FeatureFragment extends BaseFragment {
             public void error(Throwable error) {
                 lvFeatureList.setVisibility(View.GONE);
                 tvNoContent.setVisibility(View.VISIBLE);
-                Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+                Toast.makeText(FeatureActivity.this, Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void assignUserToFeature(int featureId);
     }
 
     private class FeatureAdapter extends BaseAdapter {
@@ -191,7 +169,7 @@ public class FeatureFragment extends BaseFragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
             View vw;
             if (view == null) {
-                vw = LayoutInflater.from(getActivity()).inflate(R.layout.feature_row, null);
+                vw = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.feature_row, null);
             } else {
                 vw = view;
             }
@@ -212,8 +190,8 @@ public class FeatureFragment extends BaseFragment {
     }
 
     private void createFeature() {
-        dialog = new Dialog(getActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.create_feature, null);
+        dialog = new Dialog(FeatureActivity.this);
+        View view = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.create_feature, null);
         dialog.setContentView(view);
         dialog.show();
         EditText etFeatureTitle = view.findViewById(R.id.etFeatureTitle);
@@ -248,7 +226,7 @@ public class FeatureFragment extends BaseFragment {
             public void success(Feature response) {
                 if (dialog != null)
                     dialog.dismiss();
-                Toast.makeText(getActivity(), "Done ", Toast.LENGTH_LONG).show();
+                Toast.makeText(FeatureActivity.this, "Done ", Toast.LENGTH_LONG).show();
                 getFeatureList();
             }
 
@@ -256,7 +234,7 @@ public class FeatureFragment extends BaseFragment {
             public void error(Throwable error) {
                 if (dialog != null)
                     dialog.dismiss();
-                Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+                Toast.makeText(FeatureActivity.this, Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -273,14 +251,14 @@ public class FeatureFragment extends BaseFragment {
 
             @Override
             public void error(Throwable error) {
-                Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+                Toast.makeText(FeatureActivity.this, Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
     }
 
     private void showUserList(String title, List<User> response) {
-        Dialog mShowAssign = new Dialog(getActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.show_feature_wise_users, null);
+        Dialog mShowAssign = new Dialog(FeatureActivity.this);
+        View view = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.show_feature_wise_users, null);
         mShowAssign.setContentView(view);
         mShowAssign.show();
         TextView tvTitle = view.findViewById(R.id.tvTitle);
@@ -330,14 +308,14 @@ public class FeatureFragment extends BaseFragment {
     }
 
     private void showReviewDialog(List<UserReview> response) {
-        Dialog dialog = new Dialog(getActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_show_feature_user_reviews, null);
+        Dialog dialog = new Dialog(FeatureActivity.this);
+        View view = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.layout_show_feature_user_reviews, null);
         dialog.setContentView(view);
         dialog.show();
         RecyclerView lvUserReviewList = view.findViewById(R.id.lvUserReviewList);
 
-        ReviewHistoryFragment.UserReviewAdapter adapter = new ReviewHistoryFragment.UserReviewAdapter(response, getActivity());
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(getActivity());
+        ReviewHistoryFragment.UserReviewAdapter adapter = new ReviewHistoryFragment.UserReviewAdapter(response, FeatureActivity.this);
+        RecyclerView.LayoutManager lm = new LinearLayoutManager(FeatureActivity.this);
         lvUserReviewList.setLayoutManager(lm);
         lvUserReviewList.setItemAnimator(new DefaultItemAnimator());
         lvUserReviewList.setAdapter(adapter);
@@ -367,8 +345,8 @@ public class FeatureFragment extends BaseFragment {
     }
 
     private void showRatingSummaryDialog(List<RatingSummary> response) {
-        Dialog dialog = new Dialog(getActivity());
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.layout_show_feature_user_rating_summary, null);
+        Dialog dialog = new Dialog(FeatureActivity.this);
+        View view = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.layout_show_feature_user_rating_summary, null);
         dialog.setContentView(view);
         dialog.show();
         TextView tvNoRatingsMsg = view.findViewById(R.id.tvNoRatingsMsg);
@@ -383,7 +361,7 @@ public class FeatureFragment extends BaseFragment {
         }
 
         ListView lvOverallRatings = view.findViewById(R.id.lvOverallRatings);
-        RatingAdapter ratingAdapter = new RatingAdapter(getActivity(), response);
+        RatingAdapter ratingAdapter = new RatingAdapter(FeatureActivity.this, response);
         lvOverallRatings.setAdapter(ratingAdapter);
     }
 
@@ -397,14 +375,14 @@ public class FeatureFragment extends BaseFragment {
             public void success(User response) {
                 if (dialog != null)
                     dialog.dismiss();
-                Toast.makeText(getActivity(), "Done ", Toast.LENGTH_LONG).show();
+                Toast.makeText(FeatureActivity.this, "Done ", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void error(Throwable error) {
                 if (dialog != null)
                     dialog.dismiss();
-                Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+                Toast.makeText(FeatureActivity.this, Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -455,7 +433,7 @@ public class FeatureFragment extends BaseFragment {
         public View getView(int i, View view, ViewGroup viewGroup) {
             View vw;
             if (view == null) {
-                vw = LayoutInflater.from(getActivity()).inflate(R.layout.featurewise_users_row, null);
+                vw = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.featurewise_users_row, null);
             } else {
                 vw = view;
             }
