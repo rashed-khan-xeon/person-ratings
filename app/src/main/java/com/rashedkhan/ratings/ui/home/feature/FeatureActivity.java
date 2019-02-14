@@ -130,6 +130,10 @@ public class FeatureActivity extends BaseActivity {
         });
     }
 
+    public void goBack(View view) {
+        onBackPressed();
+    }
+
     private class FeatureAdapter extends BaseAdapter {
         private List<Feature> features;
 
