@@ -25,9 +25,6 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 import com.google.gson.JsonObject;
 import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseActivity;
@@ -46,7 +43,6 @@ import com.rashedkhan.ratings.ui.home.profile.ProfileFragment;
 import com.rashedkhan.ratings.ui.home.search.SearchFragment;
 import com.rashedkhan.ratings.ui.home.setting.SettingFragment;
 import com.rashedkhan.ratings.util.Util;
-
 import java.util.Arrays;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -55,7 +51,6 @@ public class HomeActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.Transfer,  EditProfileFragment.Update, HomeContract.HomeView {
     ActionBarDrawerToggle toggle;
     CircleImageView civEfProfilePicHeader;
-    private InterstitialAd mInterstitialAd;
     Dialog dialog;
     private HomePresenter presenter;
     NavigationView navigationView;
@@ -68,20 +63,9 @@ public class HomeActivity extends BaseActivity
         configToolbar();
         goToHome();
         initViewComponents();
-        MobileAds.initialize(this, getString(R.string.admob_app_id));
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
-        // mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-
-
         if (!Util.get().isNetworkAvailable(this)) {
             Util.get().showToastMsg(this, "No Network Available !");
         }
-        // ATTENTION: This was auto-generated to handle app links.
-        Intent appLinkIntent = getIntent();
-        String appLinkAction = appLinkIntent.getAction();
-        Uri appLinkData = appLinkIntent.getData();
     }
 
     private void configToolbar() {
@@ -127,11 +111,9 @@ public class HomeActivity extends BaseActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.home, menu);
-        MenuItem share = menu.findItem(R.id.share);
         MenuItem setting = menu.findItem(R.id.settings);
 
         if (RatingsApplication.getInstant().getUser().getUserRole().getRoleId() == ConfigKeys.getInstant().ADMIN) {
-            share.setVisible(false);
             setting.setVisible(false);
             Menu navMenu = navigationView.getMenu();
             navMenu.getItem(1).setVisible(false);
@@ -182,11 +164,6 @@ public class HomeActivity extends BaseActivity
                 goToHome();
                 break;
             case R.id.profile:
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
                 addFragment(ProfileFragment.class);
                 break;
             case R.id.feature:
@@ -196,11 +173,6 @@ public class HomeActivity extends BaseActivity
                 addFragment(SettingFragment.class);
                 break;
             case R.id.historyMenu:
-                if (mInterstitialAd.isLoaded()) {
-                    mInterstitialAd.show();
-                } else {
-                    Log.d("TAG", "The interstitial wasn't loaded yet.");
-                }
                 startActivity(new Intent(this, HistoryActivity.class));
                 overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                 break;
@@ -223,9 +195,7 @@ public class HomeActivity extends BaseActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.changePassword) {
             changePassword();
-        } else if (item.getItemId() == R.id.share) {
-            share();
-        } else if (item.getItemId() == R.id.settings) {
+        }else if (item.getItemId() == R.id.settings) {
             addFragment(SettingFragment.class);
         } else if (item.getItemId() == R.id.home) {
             goToHome();
@@ -319,14 +289,6 @@ public class HomeActivity extends BaseActivity
         if (dialog != null) {
             dialog.dismiss();
         }
-    }
-
-    private void share() {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, ApiUrl.getInstance().getRatingsShareLink());
-        intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share");
-        startActivity(Intent.createChooser(intent, "Share"));
     }
 
 }

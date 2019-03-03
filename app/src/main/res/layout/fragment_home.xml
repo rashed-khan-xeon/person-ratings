@@ -47,6 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:visibility="gone"
                 android:background="@drawable/spinner_background"
                 android:inputType="textEmailAddress"
                 android:textSize="14sp" />
@@ -117,15 +118,4 @@
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
-
-    <com.google.android.gms.ads.AdView
-        android:id="@+id/adView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        ads:adSize="BANNER"
-        ads:adUnitId="@string/admob_banner_ad_id" />
 </LinearLayout>

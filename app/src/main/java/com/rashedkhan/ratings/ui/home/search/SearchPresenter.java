@@ -10,6 +10,7 @@ import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.data.repository.IHttpRepository;
 import com.rashedkhan.ratings.util.Util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -112,7 +113,7 @@ public class SearchPresenter implements SearchContract.SearchPresenter {
 
             @Override
             public void error(Throwable error) {
-                view.noUserRatings(Util.get().getMessage((VolleyError) error));
+                view.setFeaturesToView(new ArrayList<>());
             }
         });
     }

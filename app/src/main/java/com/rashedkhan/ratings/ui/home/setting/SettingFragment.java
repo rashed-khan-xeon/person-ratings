@@ -17,8 +17,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
 import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseFragment;
 import com.rashedkhan.ratings.common.adapter.ExpandedListView;
@@ -50,7 +48,6 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
     private SettingContract.SettingPresenter presenter;
     private List<Category> categoryList;
     private List<RatingsCategory> ratingsCategories;
-    private InterstitialAd mInterstitialAd;
     private TextView tvCreateYourCategory, tvCheckCategory;
     Dialog dialog;
     private User user;
@@ -73,11 +70,7 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
         presenter = new SettingPresenter(this, new HttpRepository(context));
         initViewComponents();
         setPrivacyToView();
-        mInterstitialAd = new InterstitialAd(getActivity());
-        mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
-        // mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-        return settingView;
+       return settingView;
     }
 
     private void setPrivacyToView() {
@@ -113,11 +106,6 @@ public class SettingFragment extends BaseFragment implements SettingContract.Set
             presenter.getUserRatingsCategory(ApiUrl.getInstance().getUserRatingsCategoryUrl(user.getUserId()));
         }
         btnSettingSaveChanges.setOnClickListener(view -> {
-            if (mInterstitialAd.isLoaded()) {
-                mInterstitialAd.show();
-            } else {
-                Log.d("TAG", "The interstitial wasn't loaded yet.");
-            }
             updateSetting();
         });
         tvCreateYourCategory.setOnClickListener(view -> {

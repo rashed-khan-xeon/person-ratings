@@ -46,7 +46,6 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_spalsh);
         init();
         processLocation();
-
     }
 
     private void processLocation() {
@@ -87,7 +86,6 @@ public class SplashActivity extends BaseActivity {
         animation = AnimationUtils.loadAnimation(this, R.anim.bounce);
         animation2 = AnimationUtils.loadAnimation(this, R.anim.bounce);
         animation3 = AnimationUtils.loadAnimation(this, R.anim.scale_with_fade);
-
     }
 
     private void processAnimation() {
@@ -170,7 +168,6 @@ public class SplashActivity extends BaseActivity {
                     RatingsApplication.getInstant().removePreference();
                 }
             });
-
         }
     }
 

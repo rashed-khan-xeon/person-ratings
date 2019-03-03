@@ -23,8 +23,6 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseFragment;
 import com.rashedkhan.ratings.common.adapter.ExpandedListView;
@@ -39,7 +37,6 @@ import com.rashedkhan.ratings.data.model.FeatureType;
 import com.rashedkhan.ratings.data.model.RatingSummary;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.ui.home.justify.JustifyFragment;
-import com.rashedkhan.ratings.ui.home.setting.SettingFragment;
 import com.rashedkhan.ratings.util.Util;
 
 import java.io.UnsupportedEncodingException;
@@ -104,7 +101,6 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
 
     @Override
     public void initViewComponents() {
-        AdView adView = homeView.findViewById(R.id.adView);
         lvOverallRatings = homeView.findViewById(R.id.lvOverallRatings);
         cvOverallRate = homeView.findViewById(R.id.cvOverallRate);
         btnSearch = homeView.findViewById(R.id.btnSearch);
@@ -118,7 +114,6 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
         });
         if (RatingsApplication.getInstant().getUser() != null)
             presenter.getUserAvgRatingByCategory(ApiUrl.getInstance().getAvgRatingUrl(RatingsApplication.getInstant().getUser().getUserId()));
-        adView.loadAd(new AdRequest.Builder().build());
         getFeatureTypes();
         spnFeature.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -203,6 +198,12 @@ public class SearchFragment extends BaseFragment implements SearchContract.Searc
 
     @Override
     public void setFeaturesToView(List<Feature> features) {
+        if (features.size() == 0) {
+            spnFeature.setVisibility(View.GONE);
+        } else {
+            spnFeature.setVisibility(View.VISIBLE);
+        }
+
         LinkedHashMap<String, String> data = new LinkedHashMap<>();
         data.put("0", "--Select Feature--");
         for (Feature feature : features) {

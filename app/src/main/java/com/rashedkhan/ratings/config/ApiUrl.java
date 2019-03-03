@@ -144,9 +144,6 @@ public class ApiUrl {
         return BASE_URL + "image/" + image;
     }
 
-    public String getRatingsShareLink() {
-        return "https://play.google.com/store/apps/details?id=com.rashedkhan.ratings";
-    }
 
 
     public String getAllCategoriesByUserIdUrl(int userId) {

@@ -153,10 +153,10 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Choose Category:"
+                    android:layout_marginTop="5dp"
+                    android:text="Category:"
                     android:textColor="@color/colorAccent"
-                    android:textSize="12sp" />
+                    android:textSize="14sp" />
 
                 <Spinner
                     android:id="@+id/spnUserSelectedCat"
@@ -194,8 +194,7 @@
                         style="@style/ratingBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:entries="@array/review_category" />
+                        android:layout_marginTop="5dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -208,11 +207,11 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingBottom="10dp"
-                        android:paddingTop="10dp"
+                        android:paddingBottom="5dp"
+                        android:paddingTop="5dp"
                         android:text="Your Review"
                         android:textColor="@color/colorAccent"
-                        android:textSize="12sp" />
+                        android:textSize="14sp" />
 
                     <EditText
                         android:id="@+id/etComments"

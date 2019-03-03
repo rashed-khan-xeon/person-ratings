@@ -22,22 +22,14 @@
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
-        <meta-data
-            android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/admob_app_id"/>
+
 
         <activity android:name=".ui.home.auth.LoginActivity">
-            <intent-filter android:autoVerify="true"
-                tools:targetApi="m">
+            <intent-filter >
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:host="rashedkhan.com"
-                    android:pathPattern="/ "
-                    android:scheme="http" />
             </intent-filter>
         </activity>
         <activity android:name=".common.BaseActivity" />
