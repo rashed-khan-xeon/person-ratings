@@ -15,9 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 3.1.18.
- */
+
 
 public class ProfilePresenter implements ProfileContract.ProfilePresenter {
     private ProfileContract.ProfileView view;

@@ -39,7 +39,7 @@ import com.rashedkhan.ratings.data.implementation.HttpRepository;
 import com.rashedkhan.ratings.data.model.User;
 import com.rashedkhan.ratings.ui.home.auth.LoginActivity;
 import com.rashedkhan.ratings.ui.home.feature.FeatureActivity;
-import com.rashedkhan.ratings.ui.home.feature.FeatureTypeAssignment;
+import com.rashedkhan.ratings.ui.home.feature.FeatureTypeFragment;
 import com.rashedkhan.ratings.ui.home.history.HistoryActivity;
 import com.rashedkhan.ratings.ui.home.profile.EditProfileFragment;
 import com.rashedkhan.ratings.ui.home.profile.ProfileFragment;
@@ -71,7 +71,6 @@ public class HomeActivity extends BaseActivity
         MobileAds.initialize(this, getString(R.string.admob_app_id));
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.admob_ad_id));
-
         // mInterstitialAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
@@ -169,7 +168,7 @@ public class HomeActivity extends BaseActivity
             return;
         }
         if (RatingsApplication.getInstant().getUser().getUserRole() != null && RatingsApplication.getInstant().getUser().getUserRole().getRoleId() == ConfigKeys.getInstant().ADMIN) {
-            addFragment(FeatureTypeAssignment.class);
+            addFragment(FeatureTypeFragment.class);
         } else {
             addFragment(SearchFragment.class);
         }

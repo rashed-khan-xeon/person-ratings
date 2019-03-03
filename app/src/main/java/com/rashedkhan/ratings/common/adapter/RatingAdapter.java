@@ -15,9 +15,6 @@ import com.rashedkhan.ratings.util.Util;
 
 import java.util.List;
 
-/**
- * Created by arifk on 7.2.18.
- */
 
 public class RatingAdapter extends BaseAdapter {
     private List<RatingSummary> ratingSummary;
@@ -67,9 +64,9 @@ public class RatingAdapter extends BaseAdapter {
         RatingBar itemRatings = vw.findViewById(R.id.itemRatings);
         tvRatItemTitle.setText(ratingSummary.get(i).getCategory() == null ? "" : ratingSummary.get(i).getCategory());
         itemRatings.setRating(ratingSummary.get(i).getAvgRatings());
-        tvRatingsCount.setText(String.valueOf(ratingSummary.get(i).getAvgRatings()));
+        tvRatingsCount.setText(String.valueOf(Math.floor(ratingSummary.get(i).getAvgRatings())));
         if (ratingSummary.get(i).getCount() > 0) {
-            tvRatingsCount.append(String.valueOf(ratingSummary.get(i).getCount()));
+            tvRatingsCount.append(String.valueOf(" ( " + ratingSummary.get(i).getCount() + " )"));
         } else {
             itemRatings.setVisibility(View.GONE);
             tvRatingsCount.setText(R.string.nobody_rated);

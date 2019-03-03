@@ -7,10 +7,6 @@ import com.rashedkhan.ratings.ui.home.common.BaseView;
 
 import java.util.List;
 
-/**
- * Created by arifk on 3.1.18.
- */
-
 public interface ProfileContract {
     interface ProfilePresenter {
         void getUserSelectedCategory(String url);

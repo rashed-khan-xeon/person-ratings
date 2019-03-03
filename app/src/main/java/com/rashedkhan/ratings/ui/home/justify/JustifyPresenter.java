@@ -12,10 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 6.1.18.
- */
-
 public class JustifyPresenter implements JustifyContract.JustifyPresenter {
     private JustifyContract.JustifyView view;
     private IHttpRepository repository;

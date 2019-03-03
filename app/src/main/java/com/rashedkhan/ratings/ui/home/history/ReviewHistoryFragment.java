@@ -26,9 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class ReviewHistoryFragment extends Fragment implements HistoryContract.ReviewView {
     private RecyclerView lvUserReviewList;
     private View reviewContent;

@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 12.1.18.
- */
 
 public class ReviewPresenter implements HistoryContract.ReviewsPresenter {
 

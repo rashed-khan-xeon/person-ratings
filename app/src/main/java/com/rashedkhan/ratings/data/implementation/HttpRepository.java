@@ -13,9 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 29.12.17.
- */
 
 public class HttpRepository implements IHttpRepository {
     private Context con;

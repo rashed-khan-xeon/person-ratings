@@ -28,9 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class RatingsHistoryFragment extends Fragment implements HistoryContract.RatingsView {
 
     private View contentView;

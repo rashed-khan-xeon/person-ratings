@@ -1,8 +1,5 @@
 package com.rashedkhan.ratings.data.model;
 
-/**
- * Created by arifk on 8.1.18.
- */
 
 public class RatingSummary {
     private float ratingsSummary;

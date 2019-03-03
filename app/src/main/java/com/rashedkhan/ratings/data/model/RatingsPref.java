@@ -1,8 +1,5 @@
 package com.rashedkhan.ratings.data.model;
 
-/**
- * Created by arifk on 31.12.17.
- */
 
 public class RatingsPref {
     private User user;

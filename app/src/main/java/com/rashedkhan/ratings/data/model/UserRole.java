@@ -1,9 +1,5 @@
 package com.rashedkhan.ratings.data.model;
 
-/**
- * Created by arifk on 30.12.17.
- */
-
 public class UserRole {
     private int userRoleId;
     private int userId;

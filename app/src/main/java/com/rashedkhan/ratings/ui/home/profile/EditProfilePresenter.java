@@ -11,9 +11,6 @@ import com.rashedkhan.ratings.util.Util;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by arifk on 12.1.18.
- */
 
 public class EditProfilePresenter implements ProfileContract.EditProfilePresenter {
     private ProfileContract.EditProfileView view;

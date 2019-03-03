@@ -12,10 +12,6 @@ import com.android.volley.VolleyError;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Created by arifk on 9.12.17.
- */
-
 public class Util {
     private ProgressDialog progressDialog;
     private static Util util = null;

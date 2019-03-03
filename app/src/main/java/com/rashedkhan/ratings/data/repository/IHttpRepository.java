@@ -5,10 +5,6 @@ import com.rashedkhan.ratings.core.ResponseListener;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 29.12.17.
- */
-
 public interface IHttpRepository {
     <T> void get(String path,Class<T> clazz, Map<String, String> header, ResponseListener<T> responseListener);
 

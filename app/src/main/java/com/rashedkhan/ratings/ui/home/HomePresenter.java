@@ -10,9 +10,7 @@ import com.rashedkhan.ratings.util.Util;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by arifk on 25.1.18.
- */
+
 
 public class HomePresenter implements HomeContract.Presenter {
     private HomeContract.HomeView view;

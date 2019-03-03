@@ -11,9 +11,6 @@ import com.rashedkhan.ratings.data.model.User;
 
 import java.util.Map;
 
-/**
- * Created by arifk on 8.12.17.
- */
 
 public class RatingsApplication extends Application {
     private static RatingsApplication application;

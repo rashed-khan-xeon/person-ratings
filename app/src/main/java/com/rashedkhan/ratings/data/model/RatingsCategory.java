@@ -1,8 +1,6 @@
 package com.rashedkhan.ratings.data.model;
 
-/**
- * Created by arifk on 30.12.17.
- */
+
 
 public class RatingsCategory {
     private int ratingsCatId;

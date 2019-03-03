@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FeatureTypeAssignment extends BaseFragment {
+public class FeatureTypeFragment extends BaseFragment {
 
     private ListView lvFeatureTypeList;
     private Button btnCreateFType;
@@ -44,7 +44,7 @@ public class FeatureTypeAssignment extends BaseFragment {
     private Dialog dialog;
     private ImageButton btnBack;
 
-    public FeatureTypeAssignment() {
+    public FeatureTypeFragment() {
     }
 
     @Nullable
@@ -62,7 +62,6 @@ public class FeatureTypeAssignment extends BaseFragment {
     }
 
     private void getFeatureTypes() {
-        dialog = new Dialog(getActivity());
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
@@ -70,8 +69,6 @@ public class FeatureTypeAssignment extends BaseFragment {
         repository.getAll(url, FeatureType[].class, header, new ResponseListener<List<FeatureType>>() {
                     @Override
                     public void success(List<FeatureType> response) {
-                        if (dialog != null)
-                            dialog.dismiss();
                         FeatureTypeAdapter adapter = new FeatureTypeAdapter(response);
                         lvFeatureTypeList.setAdapter(adapter);
                         adapter.setItemCheckedListener(position -> {
@@ -94,8 +91,6 @@ public class FeatureTypeAssignment extends BaseFragment {
 
                     @Override
                     public void error(Throwable error) {
-                        if (dialog != null)
-                            dialog.dismiss();
                         Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
                     }
                 }
@@ -103,6 +98,7 @@ public class FeatureTypeAssignment extends BaseFragment {
     }
 
     private void updateFeatureType(FeatureType featureType) {
+        Util.get().showProgress(getActivity(), true, "Processing...");
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
@@ -112,6 +108,7 @@ public class FeatureTypeAssignment extends BaseFragment {
             public void success(FeatureType response) {
                 if (dialog != null)
                     dialog.dismiss();
+                Util.get().showProgress(getActivity(), false, null);
                 Toast.makeText(getActivity(), "Done ", Toast.LENGTH_LONG).show();
                 getFeatureTypes();
             }
@@ -120,6 +117,7 @@ public class FeatureTypeAssignment extends BaseFragment {
             public void error(Throwable error) {
                 if (dialog != null)
                     dialog.dismiss();
+                Util.get().showProgress(getActivity(), false, null);
                 Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });

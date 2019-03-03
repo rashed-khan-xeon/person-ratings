@@ -8,9 +8,6 @@ import com.rashedkhan.ratings.ui.home.common.BaseView;
 
 import java.util.List;
 
-/**
- * Created by arifk on 5.1.18.
- */
 
 public interface SearchContract {
     interface SearchPresenter {

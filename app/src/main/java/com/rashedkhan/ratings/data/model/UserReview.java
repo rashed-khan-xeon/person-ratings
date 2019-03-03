@@ -2,9 +2,7 @@ package com.rashedkhan.ratings.data.model;
 
 import java.util.Date;
 
-/**
- * Created by arifk on 30.12.17.
- */
+
 
 public class UserReview {
     private int userReviewId;

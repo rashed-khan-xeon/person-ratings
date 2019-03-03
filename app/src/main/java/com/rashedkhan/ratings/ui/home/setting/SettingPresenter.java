@@ -15,9 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 8.1.18.
- */
+
 
 public class SettingPresenter implements SettingContract.SettingPresenter {
 

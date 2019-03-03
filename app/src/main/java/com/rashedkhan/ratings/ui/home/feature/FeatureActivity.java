@@ -1,11 +1,8 @@
 package com.rashedkhan.ratings.ui.home.feature;
 
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,8 +21,6 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.rashedkhan.ratings.R;
 import com.rashedkhan.ratings.common.BaseActivity;
-import com.rashedkhan.ratings.common.BaseFragment;
-import com.rashedkhan.ratings.common.adapter.ExpandedListView;
 import com.rashedkhan.ratings.common.adapter.RatingAdapter;
 import com.rashedkhan.ratings.config.ApiUrl;
 import com.rashedkhan.ratings.core.RatingsApplication;
@@ -220,11 +215,10 @@ public class FeatureActivity extends BaseActivity {
             feature.setFeatureTypeId(featureTypeId);
             submitFeature(feature);
         });
-
-
     }
 
     private void submitFeature(Feature feature) {
+        Util.get().showProgress(FeatureActivity.this, true, "Processing...");
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
@@ -234,6 +228,7 @@ public class FeatureActivity extends BaseActivity {
             public void success(Feature response) {
                 if (dialog != null)
                     dialog.dismiss();
+                Util.get().showProgress(FeatureActivity.this, false, null);
                 Toast.makeText(FeatureActivity.this, "Done ", Toast.LENGTH_LONG).show();
                 getFeatureList();
             }
@@ -242,6 +237,7 @@ public class FeatureActivity extends BaseActivity {
             public void error(Throwable error) {
                 if (dialog != null)
                     dialog.dismiss();
+                Util.get().showProgress(FeatureActivity.this, false, null);
                 Toast.makeText(FeatureActivity.this, Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
@@ -254,7 +250,7 @@ public class FeatureActivity extends BaseActivity {
         repository.getAll(ApiUrl.getInstance().getFeatureWiseAssignList(featureId), User[].class, header, new ResponseListener<List<User>>() {
             @Override
             public void success(List<User> response) {
-                showUserList(title, response);
+                showFeatureWiseAssignList(title, response);
             }
 
             @Override
@@ -264,7 +260,7 @@ public class FeatureActivity extends BaseActivity {
         });
     }
 
-    private void showUserList(String title, List<User> response) {
+    private void showFeatureWiseAssignList(String title, List<User> response) {
         Dialog mShowAssign = new Dialog(FeatureActivity.this);
         View view = LayoutInflater.from(FeatureActivity.this).inflate(R.layout.show_feature_wise_users, null);
         mShowAssign.setContentView(view);
@@ -277,12 +273,12 @@ public class FeatureActivity extends BaseActivity {
         adapter.setItemCheckedListener(position -> {
             User user = response.get(position);
             user.setActive(true);
-            updateUser(user);
+            updateFeatureWiseAssignList(user);
         });
         adapter.setItemUnCheckedListener(position -> {
             User user = response.get(position);
             user.setActive(false);
-            updateUser(user);
+            updateFeatureWiseAssignList(user);
         });
         adapter.setOnSummaryClickListener(position -> {
             getUserRatingSummary(response.get(position).getUserId());
@@ -373,7 +369,7 @@ public class FeatureActivity extends BaseActivity {
         lvOverallRatings.setAdapter(ratingAdapter);
     }
 
-    private void updateUser(User user) {
+    private void updateFeatureWiseAssignList(User user) {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));

@@ -15,10 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 30.12.17.
- */
-
 public class AuthPresenter implements AuthContract.AuthPresenter, AuthContract.VerifyPresenter {
     private IHttpRepository repository;
     private AuthContract.AuthView view;

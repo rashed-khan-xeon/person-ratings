@@ -112,10 +112,11 @@ public class AssignFeatureActivity extends BaseActivity {
         Map<String, String> header = new HashMap<>();
         header.put("Content-Type", "application/json");
         header.put("accessToken", String.valueOf(RatingsApplication.getInstant().getRatingsPref().getUser().getUserId()));
-
+        Util.get().showProgress(AssignFeatureActivity.this, true, "Processing...");
         repository.post(ApiUrl.getInstance().crateFeatureUser(), Object.class, RtClients.getInstance().getGson().toJson(user), header, new ResponseListener<Object>() {
             @Override
             public void success(Object response) {
+                Util.get().showProgress(AssignFeatureActivity.this, false, null);
                 Toast.makeText(getActivity(), response.toString(), Toast.LENGTH_LONG).show();
                 featureId = fId;
                 clearView();
@@ -123,6 +124,7 @@ public class AssignFeatureActivity extends BaseActivity {
 
             @Override
             public void error(Throwable error) {
+                Util.get().showProgress(AssignFeatureActivity.this, false, null);
                 Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
             }
         });
@@ -299,6 +301,7 @@ public class AssignFeatureActivity extends BaseActivity {
             Map<String, String> header = new HashMap<>();
             header.put("Content-Type", "application/json");
             header.put("accessToken", String.valueOf(userId));
+            Util.get().showProgress(AssignFeatureActivity.this,true,"Processing...");
             repository.post(ApiUrl.getInstance().getAddCategoryUrl(), Category.class, RtClients.getInstance().getGson().toJson(category), header,
                     new ResponseListener<Category>() {
                         @Override
@@ -308,6 +311,7 @@ public class AssignFeatureActivity extends BaseActivity {
                             if (dialog != null) {
                                 dialog.dismiss();
                             }
+                            Util.get().showProgress(AssignFeatureActivity.this,false,null);
                         }
 
                         @Override
@@ -316,6 +320,7 @@ public class AssignFeatureActivity extends BaseActivity {
                                 dialog.dismiss();
                             }
                             Toast.makeText(getActivity(), Util.get().getMessage((VolleyError) error), Toast.LENGTH_LONG).show();
+                            Util.get().showProgress(AssignFeatureActivity.this,false,null);
                         }
                     });
         });

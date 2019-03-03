@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by arifk on 5.1.18.
- */
 
 public class SearchPresenter implements SearchContract.SearchPresenter {
     private IHttpRepository repository;

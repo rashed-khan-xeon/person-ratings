@@ -17,8 +17,8 @@ public class ApiUrl {
     private ApiUrl() {
     }
 
-//    private final String BASE_URL = "http://192.168.0.12/ratings/";
-    private final String BASE_URL = "http://ratings.rashedkhan.com/";
+    private final String BASE_URL = "http://192.168.0.15/ratings/";
+//    private final String BASE_URL = "http://ratings.rashedkhan.com/";
 
     public String getBASE_URL() {
         return BASE_URL;

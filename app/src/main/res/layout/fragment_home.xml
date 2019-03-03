@@ -58,7 +58,8 @@
                 android:layout_height="@dimen/button_height"
                 android:layout_gravity="end"
                 android:layout_marginTop="10dp"
-                android:text="@string/search" />
+                android:text="@string/search"
+                android:visibility="gone" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 

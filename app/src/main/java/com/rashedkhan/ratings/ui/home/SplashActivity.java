@@ -55,15 +55,18 @@ public class SplashActivity extends BaseActivity {
             Toast.makeText(this, "Please allow location service", Toast.LENGTH_SHORT).show();
             String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
             ActivityCompat.requestPermissions(SplashActivity.this, permissions, 1);
-            return;
+
         } else {
             processAnimation();
-            String locationProvider = LocationManager.NETWORK_PROVIDER;
-            Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
-            String code = getCountryName(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-            RatingsApplication.getInstant().setCountryCode(code);
+            try {
+                String locationProvider = LocationManager.NETWORK_PROVIDER;
+                Location lastKnownLocation = locationManager.getLastKnownLocation(locationProvider);
+                String code = getCountryName(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+                RatingsApplication.getInstant().setCountryCode(code);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
-
     }
 
     @Override

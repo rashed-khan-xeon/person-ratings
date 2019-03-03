@@ -11,9 +11,6 @@ import com.rashedkhan.ratings.util.LruBitmapCache;
 
 import java.util.Date;
 
-/**
- * Created by arifk on 27.12.17.
- */
 
 public class RtClients {
 

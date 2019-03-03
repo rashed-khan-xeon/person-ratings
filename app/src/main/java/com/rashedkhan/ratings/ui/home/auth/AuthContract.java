@@ -6,10 +6,6 @@ import com.rashedkhan.ratings.ui.home.common.BaseView;
 
 import java.util.List;
 
-/**
- * Created by arifk on 30.12.17.
- */
-
 public interface AuthContract {
     interface AuthPresenter {
         void doSignUp(String url, String body);
